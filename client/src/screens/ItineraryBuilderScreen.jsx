@@ -61,12 +61,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
   const [actLocation, setActLocation] = useState('');
   const [actImage, setActImage] = useState('');
 
-  // Catalog picker drawer inside activity modal
+  // Catalog picker inside activity modal
   const [availableCatalog, setAvailableCatalog] = useState([]);
-  const [catalogSearch, setCatalogSearch] = useState('');
 
   // Delete modal
-  const [deleteTarget, setDeleteTarget] = useState(null); // { type: 'stop'|'activity', id, title }
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Expanded stops
   const [expandedStops, setExpandedStops] = useState({});
@@ -81,7 +80,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
       const data = await api.getTrip(tripId);
       setTripData(data);
 
-      // Expand all stops by default
       const exp = {};
       data.stops.forEach((s) => {
         exp[s.id] = true;
@@ -94,7 +92,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
     }
   };
 
-  // City Autocomplete Search for Stop Modal
   useEffect(() => {
     if (stopCitySearch.length > 1) {
       api.getCities({ search: stopCitySearch, limit: 6 }).then((res) => {
@@ -171,7 +168,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
     }
   };
 
-  // Reorder Stops Up / Down
   const handleMoveStop = async (index, direction) => {
     const stops = [...tripData.stops];
     const targetIndex = index + direction;
@@ -190,7 +186,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
     }
   };
 
-  // Open Activity Modal
   const handleOpenAddActivity = async (stop) => {
     setTargetStop(stop);
     setEditingActivity(null);
@@ -204,7 +199,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
     setActLocation(`${stop.city_name}`);
     setActImage('');
 
-    // Fetch catalog activities for this city
     try {
       const res = await api.getCatalogActivities({ city_id: stop.city_id });
       setAvailableCatalog(res.activities || []);
@@ -276,7 +270,6 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
     }
   };
 
-  // Delete Action Confirm
   const handleDeleteExecute = async () => {
     if (!deleteTarget) return;
     try {
@@ -300,9 +293,9 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
 
   if (loading || !tripData) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <Compass className="w-10 h-10 text-indigo-400 animate-spin mx-auto" />
-        <p className="text-sm font-semibold text-slate-400">Loading Itinerary Builder...</p>
+      <div className="py-24 text-center space-y-3">
+        <Compass className="w-8 h-8 text-indigo-600 animate-spin mx-auto" />
+        <p className="text-xs font-semibold text-slate-500">Loading Itinerary Builder...</p>
       </div>
     );
   }
@@ -312,91 +305,91 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
   return (
     <div className="space-y-8 pb-20 animate-fade-in">
       {/* Top Banner Toolbar */}
-      <div className="rounded-3xl glass-panel p-6 border border-slate-700/70 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="space-y-2">
+      <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            <span className="px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">
               Interactive Builder
             </span>
-            <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-md bg-slate-800 text-slate-300 border border-slate-700">
+            <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-700">
               {trip.travel_style || 'Explorer'}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500 font-medium">
               📅 {trip.start_date} ➔ {trip.end_date}
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             {trip.title}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">{trip.description}</p>
+          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">{trip.description}</p>
         </div>
 
-        {/* Quick Navigation Modes for this Trip */}
-        <div className="flex flex-wrap items-center gap-2.5 self-start lg:self-auto">
+        {/* Quick Modes Navigation */}
+        <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto">
           <button
             onClick={() => onSelectTrip(trip.id, 'view')}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="w-3.5 h-3.5" />
             <span>Itinerary View</span>
           </button>
           <button
             onClick={() => onSelectTrip(trip.id, 'budget')}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"
           >
-            <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
+            <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
             <span>Budget & Charts</span>
           </button>
           <button
             onClick={() => onSelectTrip(trip.id, 'timeline')}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"
           >
-            <Calendar className="w-4 h-4 text-purple-400" />
+            <Calendar className="w-3.5 h-3.5 text-purple-600" />
             <span>Calendar</span>
           </button>
         </div>
       </div>
 
-      {/* Main Grid: Stops Timeline on Left, Map & Live Financials on Right */}
+      {/* Main Grid: Stops on Left, Map & Live Financials on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Stops & Day Planner */}
+        {/* Left Column: Stops List */}
         <div className="lg:col-span-8 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <MapPin className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
                 Destinations & Daily Plans ({stops.length})
               </h2>
             </div>
 
             <button
               onClick={handleOpenAddStop}
-              className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/25 transition"
+              className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span>Add Stop</span>
             </button>
           </div>
 
           {stops.length === 0 ? (
-            <div className="p-12 rounded-3xl glass-card text-center space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto">
-                <MapPin className="w-7 h-7" />
+            <div className="p-12 rounded-3xl white-card text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+                <MapPin className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-bold text-white">No Destination Stops Added</h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <h3 className="text-base font-bold text-slate-900">No Destination Stops Added</h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 Add your first city stop to begin scheduling activities and estimating lodging expenses.
               </p>
               <button
                 onClick={handleOpenAddStop}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition"
+                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-xs"
               >
                 + Add First Stop
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {stops.map((stop, stopIndex) => {
                 const stopActivities = activities.filter((a) => a.stop_id === stop.id);
                 const isExpanded = expandedStops[stop.id] !== false;
@@ -404,53 +397,50 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 return (
                   <div
                     key={stop.id}
-                    className="rounded-3xl glass-card overflow-hidden border border-slate-800 transition shadow-xl"
+                    className="rounded-3xl white-card overflow-hidden"
                   >
                     {/* Stop Header */}
-                    <div className="p-5 bg-slate-900/90 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="p-5 bg-slate-50/70 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 flex items-center justify-center font-black text-sm shrink-0">
-                          #{stopIndex + 1}
+                        <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                          {stopIndex + 1}
                         </div>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-white">
-                              {stop.city_name}
-                              {stop.country ? `, ${stop.country}` : ''}
-                            </h3>
-                          </div>
-                          <p className="text-xs text-indigo-300 font-medium flex items-center gap-1 mt-0.5">
-                            <Calendar className="w-3.5 h-3.5" />
+                          <h3 className="text-base font-extrabold text-slate-900">
+                            {stop.city_name}
+                            {stop.country ? `, ${stop.country}` : ''}
+                          </h3>
+                          <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
                             {stop.arrival_date} ➔ {stop.departure_date}
                           </p>
                         </div>
                       </div>
 
-                      {/* Stop Controls */}
+                      {/* Controls */}
                       <div className="flex items-center gap-2 self-end sm:self-auto">
-                        {/* Move Up/Down */}
-                        <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700">
+                        <div className="flex bg-white p-0.5 rounded-xl border border-slate-200">
                           <button
                             disabled={stopIndex === 0}
                             onClick={() => handleMoveStop(stopIndex, -1)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-white disabled:opacity-30 transition"
+                            className="p-1 rounded-lg text-slate-400 hover:text-slate-900 disabled:opacity-30 transition"
                           >
-                            <ArrowUp className="w-4 h-4" />
+                            <ArrowUp className="w-3.5 h-3.5" />
                           </button>
                           <button
                             disabled={stopIndex === stops.length - 1}
                             onClick={() => handleMoveStop(stopIndex, 1)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-white disabled:opacity-30 transition"
+                            className="p-1 rounded-lg text-slate-400 hover:text-slate-900 disabled:opacity-30 transition"
                           >
-                            <ArrowDown className="w-4 h-4" />
+                            <ArrowDown className="w-3.5 h-3.5" />
                           </button>
                         </div>
 
                         <button
                           onClick={() => handleOpenEditStop(stop)}
-                          className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition"
+                          className="p-2 rounded-xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition"
                         >
-                          <Edit2 className="w-4 h-4" />
+                          <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() =>
@@ -460,35 +450,35 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                               title: `Stop: ${stop.city_name}`
                             })
                           }
-                          className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition"
+                          className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 transition"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => toggleStopExpanded(stop.id)}
-                          className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                          className="p-2 rounded-xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition"
                         >
-                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>
 
                     {isExpanded && (
-                      <div className="p-5 space-y-5">
-                        {/* Lodging & Notes Card */}
+                      <div className="p-5 space-y-4">
+                        {/* Lodging Note */}
                         {(stop.lodging_name || stop.notes) && (
-                          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                            <div className="space-y-1">
+                          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                            <div className="space-y-0.5">
                               {stop.lodging_name && (
-                                <div className="flex items-center gap-2 text-slate-200 font-semibold">
-                                  <Hotel className="w-4 h-4 text-purple-400 shrink-0" />
+                                <div className="flex items-center gap-1.5 text-slate-800 font-semibold">
+                                  <Hotel className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                                   <span>Stay: {stop.lodging_name}</span>
                                 </div>
                               )}
-                              {stop.notes && <p className="text-slate-400">{stop.notes}</p>}
+                              {stop.notes && <p className="text-slate-500">{stop.notes}</p>}
                             </div>
                             {Number(stop.lodging_cost) > 0 && (
-                              <span className="font-bold text-emerald-400 px-3 py-1 bg-emerald-950/60 rounded-xl border border-emerald-500/30 whitespace-nowrap self-start sm:self-auto">
+                              <span className="font-bold text-emerald-700 px-2.5 py-1 bg-emerald-50 rounded-xl border border-emerald-200 whitespace-nowrap self-start sm:self-auto">
                                 ${stop.lodging_cost} Lodging
                               </span>
                             )}
@@ -496,14 +486,14 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                         )}
 
                         {/* Activities List */}
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                               Scheduled Activities ({stopActivities.length})
                             </span>
                             <button
                               onClick={() => handleOpenAddActivity(stop)}
-                              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                              className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
                             >
                               <Plus className="w-3.5 h-3.5" />
                               <span>Add Activity</span>
@@ -511,66 +501,66 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                           </div>
 
                           {stopActivities.length === 0 ? (
-                            <div className="p-6 rounded-2xl bg-slate-900/40 border border-dashed border-slate-800 text-center">
-                              <p className="text-xs text-slate-400">
+                            <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center">
+                              <p className="text-xs text-slate-500">
                                 No activities scheduled for this stop yet.
                               </p>
                               <button
                                 onClick={() => handleOpenAddActivity(stop)}
-                                className="mt-2 text-xs font-bold text-indigo-400 hover:underline"
+                                className="mt-1.5 text-xs font-bold text-indigo-600 hover:underline"
                               >
-                                + Browse activities or add custom
+                                + Browse curated activities or add custom
                               </button>
                             </div>
                           ) : (
-                            <div className="space-y-2.5">
+                            <div className="space-y-2">
                               {stopActivities.map((act) => (
                                 <div
                                   key={act.id}
-                                  className="group p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-indigo-500/30 transition flex items-center justify-between gap-4"
+                                  className="group p-3 rounded-2xl bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-xs transition flex items-center justify-between gap-4"
                                 >
                                   <div className="flex items-center gap-3">
                                     {act.image_url ? (
                                       <img
                                         src={act.image_url}
                                         alt={act.title}
-                                        className="w-12 h-12 rounded-xl object-cover ring-1 ring-slate-700 shrink-0"
+                                        className="w-11 h-11 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
                                       />
                                     ) : (
-                                      <div className="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                                      <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                                         <Tag className="w-5 h-5" />
                                       </div>
                                     )}
 
                                     <div>
                                       <div className="flex items-center gap-2">
-                                        <h4 className="text-sm font-bold text-white">{act.title}</h4>
-                                        <span className="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded bg-slate-800 text-slate-300 border border-slate-700">
+                                        <h4 className="text-xs font-bold text-slate-900">{act.title}</h4>
+                                        <span className="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded bg-slate-100 text-slate-600">
                                           {act.category}
                                         </span>
                                       </div>
-                                      <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1">
+                                      <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
                                         <span className="flex items-center gap-1">
-                                          <Calendar className="w-3 h-3 text-slate-500" />
+                                          <Calendar className="w-3 h-3 text-slate-400" />
                                           {act.scheduled_date} @ {act.scheduled_time}
                                         </span>
                                         <span className="flex items-center gap-1">
-                                          <Clock className="w-3 h-3 text-slate-500" />
-                                          {act.duration_mins} mins
+                                          <Clock className="w-3 h-3 text-slate-400" />
+                                          {act.duration_mins}m
                                         </span>
                                       </div>
                                     </div>
                                   </div>
 
                                   <div className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-emerald-400 whitespace-nowrap">
+                                    <span className="text-xs font-bold text-emerald-700 whitespace-nowrap">
                                       {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
                                     </span>
 
-                                    <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
+                                    <div className="flex items-center gap-1">
                                       <button
                                         onClick={() => handleOpenEditActivity(act, stop)}
-                                        className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white"
+                                        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition"
                                       >
                                         <Edit2 className="w-3.5 h-3.5" />
                                       </button>
@@ -582,7 +572,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                                             title: act.title
                                           })
                                         }
-                                        className="p-1.5 rounded-lg hover:bg-rose-500/10 text-slate-400 hover:text-rose-400"
+                                        className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition"
                                       >
                                         <Trash2 className="w-3.5 h-3.5" />
                                       </button>
@@ -602,31 +592,31 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
           )}
         </div>
 
-        {/* Right Column: Route Map & Live Budget Highlights */}
+        {/* Right Column: Route Map & Live Financials */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Interactive Multi-City Route Map */}
-          <div className="rounded-3xl glass-card p-5 border border-slate-800 space-y-3">
+          {/* Route Map */}
+          <div className="rounded-3xl white-card p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Navigation className="w-4 h-4 text-indigo-400" />
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Navigation className="w-4 h-4 text-indigo-600" />
                 Route Map Overview
               </span>
-              <span className="text-[11px] text-slate-400">{stops.length} Cities</span>
+              <span className="text-[11px] text-slate-500 font-semibold">{stops.length} Cities</span>
             </div>
-            <div className="h-64 rounded-2xl overflow-hidden">
+            <div className="h-60 rounded-2xl overflow-hidden border border-slate-200">
               <MapViewer stops={stops} height="100%" />
             </div>
           </div>
 
           {/* Real-time Budget Tracker */}
-          <div className="rounded-3xl glass-card p-6 border border-slate-800 space-y-5">
+          <div className="rounded-3xl white-card p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Live Budget Tracker
               </span>
               <button
                 onClick={() => onSelectTrip(trip.id, 'budget')}
-                className="text-xs font-bold text-indigo-400 hover:underline"
+                className="text-xs font-bold text-indigo-600 hover:underline"
               >
                 Detailed Breakdown →
               </button>
@@ -638,18 +628,18 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
               currency={trip.currency === 'EUR' ? '€' : trip.currency === 'GBP' ? '£' : '$'}
             />
 
-            <div className="space-y-2 pt-3 border-t border-slate-800/80 text-xs">
-              <div className="flex items-center justify-between text-slate-300">
-                <span>🏨 Lodging Sum:</span>
-                <span className="font-bold text-white">${metrics?.lodgingTotal || 0}</span>
+            <div className="space-y-1.5 pt-3 border-t border-slate-100 text-xs">
+              <div className="flex items-center justify-between text-slate-600">
+                <span>🏨 Lodging Total:</span>
+                <span className="font-bold text-slate-900">${metrics?.lodgingTotal || 0}</span>
               </div>
-              <div className="flex items-center justify-between text-slate-300">
-                <span>🎟️ Activities Sum:</span>
-                <span className="font-bold text-white">${metrics?.activitiesTotal || 0}</span>
+              <div className="flex items-center justify-between text-slate-600">
+                <span>🎟️ Activities Total:</span>
+                <span className="font-bold text-slate-900">${metrics?.activitiesTotal || 0}</span>
               </div>
-              <div className="flex items-center justify-between text-slate-300">
+              <div className="flex items-center justify-between text-slate-600">
                 <span>✈️ Direct Logged Expenses:</span>
-                <span className="font-bold text-white">${metrics?.expensesTotal || 0}</span>
+                <span className="font-bold text-slate-900">${metrics?.expensesTotal || 0}</span>
               </div>
             </div>
           </div>
@@ -665,11 +655,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
       >
         <form onSubmit={handleSaveStop} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               City / Destination *
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 required
@@ -679,13 +669,12 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                   setSelectedCity(null);
                 }}
                 placeholder="Search world cities (e.g. Paris, Tokyo, Rome...)"
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
 
-            {/* City Suggestion dropdown */}
             {citySuggestions.length > 0 && !selectedCity && (
-              <div className="mt-1 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-2xl z-20">
+              <div className="mt-1 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-lg z-20">
                 {citySuggestions.map((c) => (
                   <div
                     key={c.id}
@@ -694,10 +683,10 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                       setStopCitySearch(`${c.name}, ${c.country}`);
                       setCitySuggestions([]);
                     }}
-                    className="p-2.5 hover:bg-indigo-600/30 cursor-pointer flex items-center justify-between text-xs text-slate-200"
+                    className="p-2.5 hover:bg-indigo-50 cursor-pointer flex items-center justify-between text-xs text-slate-800"
                   >
                     <span className="font-bold">{c.name}, {c.country}</span>
-                    <span className="text-[10px] text-slate-400">{c.continent} • {c.cost_index}</span>
+                    <span className="text-[10px] text-slate-500">{c.continent} • {c.cost_index}</span>
                   </div>
                 ))}
               </div>
@@ -706,7 +695,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Arrival Date *
               </label>
               <input
@@ -714,11 +703,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 required
                 value={stopArrival}
                 onChange={(e) => setStopArrival(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Departure Date *
               </label>
               <input
@@ -726,14 +715,14 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 required
                 value={stopDeparture}
                 onChange={(e) => setStopDeparture(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Lodging / Hotel Name
               </label>
               <input
@@ -741,11 +730,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 value={lodgingName}
                 onChange={(e) => setLodgingName(e.target.value)}
                 placeholder="e.g. Grand Hotel Central"
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Lodging Cost ($)
               </label>
               <input
@@ -753,13 +742,13 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 min="0"
                 value={lodgingCost}
                 onChange={(e) => setLodgingCost(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Notes / Local Tips
             </label>
             <textarea
@@ -767,21 +756,21 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
               value={stopNotes}
               onChange={(e) => setStopNotes(e.target.value)}
               placeholder="Transit instructions, neighborhood details..."
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setIsStopModalOpen(false)}
-              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-800 rounded-xl"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30"
+              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
             >
               Save Stop
             </button>
@@ -796,19 +785,18 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
         title={editingActivity ? 'Edit Activity' : `Schedule Activity for ${targetStop?.city_name}`}
         maxWidth="max-w-2xl"
       >
-        <form onSubmit={handleSaveActivity} className="space-y-5">
-          {/* Catalog presets picker if available */}
+        <form onSubmit={handleSaveActivity} className="space-y-4">
           {availableCatalog.length > 0 && !editingActivity && (
-            <div className="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 space-y-2">
-              <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> Curated Experiences in {targetStop?.city_name} (1-Click Fill)
+            <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-2">
+              <span className="text-[11px] font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Curated Experiences in {targetStop?.city_name} (1-Click Fill)
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
                 {availableCatalog.map((item) => (
                   <div
                     key={item.id}
                     onClick={() => handleSelectCatalogItem(item)}
-                    className="p-2 rounded-xl bg-slate-900/80 hover:bg-indigo-600/30 border border-slate-800 cursor-pointer flex items-center gap-2 text-xs transition"
+                    className="p-2 rounded-xl bg-white hover:bg-indigo-100/50 border border-indigo-100 cursor-pointer flex items-center gap-2 text-xs transition"
                   >
                     <img
                       src={item.image_url}
@@ -816,8 +804,8 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                       className="w-10 h-10 rounded-lg object-cover"
                     />
                     <div className="flex-1 truncate">
-                      <p className="font-bold text-white truncate">{item.name}</p>
-                      <p className="text-[10px] text-emerald-400">${item.cost} • {item.duration_mins}m</p>
+                      <p className="font-bold text-slate-900 truncate">{item.name}</p>
+                      <p className="text-[10px] text-emerald-700 font-semibold">${item.cost} • {item.duration_mins}m</p>
                     </div>
                   </div>
                 ))}
@@ -826,7 +814,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
           )}
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Activity Title *
             </label>
             <input
@@ -835,19 +823,19 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
               value={actTitle}
               onChange={(e) => setActTitle(e.target.value)}
               placeholder="e.g. Louvre Museum Masterpieces Guided Walk"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Category
               </label>
               <select
                 value={actCategory}
                 onChange={(e) => setActCategory(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               >
                 <option value="sightseeing">Sightseeing</option>
                 <option value="food">Food & Dining</option>
@@ -858,7 +846,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Cost ($)
               </label>
               <input
@@ -866,11 +854,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 min="0"
                 value={actCost}
                 onChange={(e) => setActCost(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Date *
               </label>
               <input
@@ -878,25 +866,25 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 required
                 value={actDate}
                 onChange={(e) => setActDate(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Time
               </label>
               <input
                 type="time"
                 value={actTime}
                 onChange={(e) => setActTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Location / Address
               </label>
               <input
@@ -904,11 +892,11 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 value={actLocation}
                 onChange={(e) => setActLocation(e.target.value)}
                 placeholder="e.g. Rue de Rivoli, Paris"
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Photo URL (Optional)
               </label>
               <input
@@ -916,13 +904,13 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                 value={actImage}
                 onChange={(e) => setActImage(e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Description / Notes
             </label>
             <textarea
@@ -930,21 +918,21 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
               value={actDescription}
               onChange={(e) => setActDescription(e.target.value)}
               placeholder="Booking references, skip-the-line notes..."
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setIsActivityModalOpen(false)}
-              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-800 rounded-xl"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30"
+              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
             >
               Save Activity
             </button>
@@ -952,7 +940,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       <ConfirmDialog
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}

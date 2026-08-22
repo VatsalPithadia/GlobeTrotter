@@ -26,7 +26,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
   const notify = useNotification();
   const [tripData, setTripData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('days'); // 'days' | 'cities' | 'map'
+  const [viewMode, setViewMode] = useState('days');
 
   useEffect(() => {
     loadTrip();
@@ -56,16 +56,15 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
 
   if (loading || !tripData) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <Compass className="w-10 h-10 text-indigo-400 animate-spin mx-auto" />
-        <p className="text-sm font-semibold text-slate-400">Loading structured itinerary...</p>
+      <div className="py-24 text-center space-y-3">
+        <Compass className="w-8 h-8 text-indigo-600 animate-spin mx-auto" />
+        <p className="text-xs font-semibold text-slate-500">Loading structured itinerary...</p>
       </div>
     );
   }
 
-  const { trip, stops, activities, metrics } = tripData;
+  const { trip, stops, activities } = tripData;
 
-  // Group activities by date for Day-by-Day timeline
   const activitiesByDate = {};
   activities.forEach((act) => {
     if (!activitiesByDate[act.scheduled_date]) {
@@ -78,84 +77,84 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
 
   return (
     <div className="space-y-8 pb-20 animate-fade-in">
-      {/* 1. Trip Header Hero */}
-      <div className="relative rounded-3xl overflow-hidden glass-panel border border-slate-700/60 shadow-2xl">
+      {/* Trip Header Hero */}
+      <div className="relative rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
         <div className="relative h-64 sm:h-80 w-full overflow-hidden">
           <img
             src={trip.cover_image}
             alt={trip.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent" />
 
-          {/* Action Bar inside Header (No Print) */}
+          {/* Action Bar (No Print) */}
           <div className="absolute top-4 right-4 flex items-center gap-2 no-print">
             <button
               onClick={() => onSelectTrip(trip.id, 'builder')}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white text-xs font-bold backdrop-blur-md border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/95 hover:bg-white text-slate-900 text-xs font-bold shadow-sm transition"
             >
-              <Edit2 className="w-3.5 h-3.5 text-indigo-400" />
+              <Edit2 className="w-3.5 h-3.5 text-indigo-600" />
               <span>Edit Builder</span>
             </button>
             <button
               onClick={handlePrint}
-              className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-slate-200 hover:text-white backdrop-blur-md border border-slate-700 transition"
+              className="p-2 rounded-xl bg-white/95 hover:bg-white text-slate-700 shadow-sm transition"
               title="Print or Save PDF"
             >
               <Printer className="w-4 h-4" />
             </button>
             <button
               onClick={handleCopyShare}
-              className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-slate-200 hover:text-white backdrop-blur-md border border-slate-700 transition"
+              className="p-2 rounded-xl bg-white/95 hover:bg-white text-slate-700 shadow-sm transition"
               title="Share Link"
             >
-              <Share2 className="w-4 h-4 text-cyan-400" />
+              <Share2 className="w-4 h-4 text-cyan-600" />
             </button>
           </div>
 
           {/* Title & Info */}
-          <div className="absolute bottom-6 left-6 right-6 space-y-2">
+          <div className="absolute bottom-6 left-6 right-6 space-y-2 text-white">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 text-[10px] font-extrabold uppercase rounded-lg bg-indigo-600 text-white shadow">
+              <span className="px-2.5 py-0.5 text-[10px] font-extrabold uppercase rounded-lg bg-indigo-600 text-white shadow-xs">
                 {trip.status}
               </span>
-              <span className="px-3 py-1 text-[10px] font-bold rounded-lg bg-slate-900/80 backdrop-blur-md text-slate-200 border border-slate-700">
+              <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-lg bg-white/90 text-slate-800 shadow-xs">
                 {trip.travel_style || 'Explorer'}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-sm">
               {trip.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-200 font-medium pt-1">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-200 font-medium pt-0.5">
               <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-indigo-400" />
+                <Calendar className="w-4 h-4 text-indigo-300" />
                 {trip.start_date} ➔ {trip.end_date}
               </span>
               <span className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-purple-400" />
+                <MapPin className="w-4 h-4 text-purple-300" />
                 {stops.length} Destination Stops
               </span>
               <span className="flex items-center gap-1.5">
-                <DollarSign className="w-4 h-4 text-emerald-400" />
+                <DollarSign className="w-4 h-4 text-emerald-300" />
                 Budget: ${trip.total_budget}
               </span>
             </div>
           </div>
         </div>
 
-        {/* View Mode Toggle Ribbon */}
-        <div className="p-4 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between no-print">
-          <p className="text-xs text-slate-400 hidden sm:block">
-            {trip.description || 'Custom structured travel itinerary'}
+        {/* View Mode Switcher */}
+        <div className="p-4 bg-white border-t border-slate-100 flex items-center justify-between no-print">
+          <p className="text-xs text-slate-500 hidden sm:block">
+            {trip.description || 'Structured travel itinerary'}
           </p>
 
-          <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700 self-end sm:self-auto">
+          <div className="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200 self-end sm:self-auto">
             <button
               onClick={() => setViewMode('days')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition ${
-                viewMode === 'days' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                viewMode === 'days' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <ListOrdered className="w-3.5 h-3.5" />
@@ -164,7 +163,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
             <button
               onClick={() => setViewMode('cities')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition ${
-                viewMode === 'cities' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                viewMode === 'cities' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -173,7 +172,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
             <button
               onClick={() => setViewMode('map')}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition ${
-                viewMode === 'map' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                viewMode === 'map' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Map className="w-3.5 h-3.5" />
@@ -183,19 +182,19 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
         </div>
       </div>
 
-      {/* 2. MODE 1: DAY-BY-DAY VIEW */}
+      {/* 1. DAY-BY-DAY VIEW */}
       {viewMode === 'days' && (
         <div className="space-y-8">
           {sortedDates.length === 0 ? (
-            <div className="p-12 rounded-3xl glass-card text-center space-y-3">
-              <Calendar className="w-8 h-8 text-indigo-400 mx-auto" />
-              <h3 className="text-base font-bold text-white">No Scheduled Day Activities</h3>
-              <p className="text-xs text-slate-400">
+            <div className="p-12 rounded-3xl white-card text-center space-y-3">
+              <Calendar className="w-8 h-8 text-indigo-600 mx-auto" />
+              <h3 className="text-base font-bold text-slate-900">No Scheduled Day Activities</h3>
+              <p className="text-xs text-slate-500">
                 Go to the Itinerary Builder to assign activities to specific dates.
               </p>
               <button
                 onClick={() => onSelectTrip(trip.id, 'builder')}
-                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl"
+                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-xs"
               >
                 Open Builder
               </button>
@@ -205,12 +204,12 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
               const dayActivities = activitiesByDate[dateStr];
               return (
                 <div key={dateStr} className="space-y-4">
-                  {/* Day Header Badge */}
+                  {/* Day Header */}
                   <div className="flex items-center gap-3">
-                    <div className="px-3.5 py-1.5 rounded-xl bg-indigo-600 text-white font-extrabold text-xs shadow-md shadow-indigo-600/30">
+                    <div className="px-3 py-1 rounded-xl bg-slate-900 text-white font-extrabold text-xs shadow-xs">
                       Day {dayIndex + 1}
                     </div>
-                    <span className="text-sm font-bold text-slate-200">
+                    <span className="text-sm font-bold text-slate-800">
                       {new Date(dateStr).toLocaleDateString('en-US', {
                         weekday: 'long',
                         month: 'short',
@@ -218,51 +217,51 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
                         year: 'numeric'
                       })}
                     </span>
-                    <div className="flex-1 h-px bg-slate-800" />
+                    <div className="flex-1 h-px bg-slate-200" />
                   </div>
 
-                  {/* Day Activities Cards */}
+                  {/* Day Activities Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {dayActivities.map((act) => (
                       <div
                         key={act.id}
-                        className="rounded-2xl glass-card p-5 border border-slate-800 flex flex-col justify-between space-y-4 hover:border-indigo-500/40 transition"
+                        className="rounded-2xl white-card p-4 flex flex-col justify-between space-y-3"
                       >
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                           {act.image_url && (
                             <img
                               src={act.image_url}
                               alt={act.title}
-                              className="w-full h-36 rounded-xl object-cover ring-1 ring-slate-700"
+                              className="w-full h-36 rounded-xl object-cover ring-1 ring-slate-200"
                             />
                           )}
 
                           <div>
                             <div className="flex items-center justify-between">
-                              <span className="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded bg-slate-800 text-indigo-300 border border-indigo-500/30">
+                              <span className="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded bg-indigo-50 text-indigo-700 border border-indigo-100">
                                 {act.category}
                               </span>
-                              <span className="text-xs font-bold text-emerald-400">
+                              <span className="text-xs font-bold text-emerald-700">
                                 {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
                               </span>
                             </div>
-                            <h4 className="text-base font-bold text-white mt-1.5">{act.title}</h4>
+                            <h4 className="text-sm font-bold text-slate-900 mt-1">{act.title}</h4>
                             {act.description && (
-                              <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                              <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
                                 {act.description}
                               </p>
                             )}
                           </div>
                         </div>
 
-                        <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                          <span className="flex items-center gap-1 font-semibold text-slate-300">
-                            <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                        <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                          <span className="flex items-center gap-1 font-semibold text-slate-700">
+                            <Clock className="w-3.5 h-3.5 text-indigo-600" />
                             {act.scheduled_time} ({act.duration_mins}m)
                           </span>
                           {act.location_name && (
                             <span className="flex items-center gap-1 truncate max-w-[140px]">
-                              <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                              <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                               {act.location_name}
                             </span>
                           )}
@@ -277,57 +276,56 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
         </div>
       )}
 
-      {/* 3. MODE 2: CITY GROUPED VIEW */}
+      {/* 2. CITY GROUPED VIEW */}
       {viewMode === 'cities' && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {stops.map((stop, sIdx) => {
             const stopActs = activities.filter((a) => a.stop_id === stop.id);
             return (
               <div
                 key={stop.id}
-                className="rounded-3xl glass-panel p-6 border border-slate-800 space-y-6"
+                className="rounded-3xl white-panel p-6 space-y-5"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-white text-base shadow-lg shadow-indigo-600/30">
+                    <div className="w-9 h-9 rounded-2xl bg-indigo-600 flex items-center justify-center font-black text-white text-sm shadow-xs">
                       {sIdx + 1}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-lg font-bold text-slate-900">
                         {stop.city_name}, {stop.country}
                       </h3>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-500">
                         📅 {stop.arrival_date} ➔ {stop.departure_date}
                       </p>
                     </div>
                   </div>
 
                   {stop.lodging_name && (
-                    <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-2 text-xs text-purple-300">
-                      <Hotel className="w-4 h-4 shrink-0" />
+                    <div className="p-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2 text-xs text-purple-800">
+                      <Hotel className="w-4 h-4 shrink-0 text-purple-600" />
                       <span>{stop.lodging_name} (${stop.lodging_cost})</span>
                     </div>
                   )}
                 </div>
 
-                {/* Stop Activities */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {stopActs.map((act) => (
                     <div
                       key={act.id}
-                      className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3"
+                      className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700">
                           {act.category}
                         </span>
-                        <span className="text-xs font-bold text-emerald-400">
+                        <span className="text-xs font-bold text-emerald-700">
                           {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-white">{act.title}</h4>
-                      <p className="text-[11px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-slate-500" />
+                      <h4 className="text-xs font-bold text-slate-900">{act.title}</h4>
+                      <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-slate-400" />
                         {act.scheduled_date} @ {act.scheduled_time}
                       </p>
                     </div>
@@ -339,17 +337,17 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
         </div>
       )}
 
-      {/* 4. MODE 3: MAP VIEW */}
+      {/* 3. MAP VIEW */}
       {viewMode === 'map' && (
-        <div className="rounded-3xl glass-panel p-6 border border-slate-800 space-y-4">
+        <div className="rounded-3xl white-panel p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-indigo-400" />
-              Full Multi-City Travel Route
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-indigo-600" />
+              Full Destination Route Map
             </h3>
-            <span className="text-xs text-slate-400">{stops.length} connected stops</span>
+            <span className="text-xs text-slate-500 font-semibold">{stops.length} connected stops</span>
           </div>
-          <div className="h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+          <div className="h-[480px] rounded-2xl overflow-hidden border border-slate-200">
             <MapViewer stops={stops} height="100%" />
           </div>
         </div>

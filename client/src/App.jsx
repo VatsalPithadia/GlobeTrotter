@@ -78,17 +78,17 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center space-y-4">
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center animate-spin">
           <div className="w-4 h-4 bg-white rounded-full" />
         </div>
-        <p className="text-sm font-bold text-slate-400">Loading GlobeTrotter...</p>
+        <p className="text-sm font-bold text-slate-600">Loading GlobeTrotter...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0b0f19] text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-indigo-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -174,8 +174,8 @@ function AppContent() {
         {activeTab === 'community' && (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h1 className="text-2xl font-extrabold text-white">Community Shared Itineraries</h1>
-              <p className="text-xs text-slate-400">
+              <h1 className="text-2xl font-extrabold text-slate-900">Community Shared Itineraries</h1>
+              <p className="text-xs text-slate-500">
                 Explore plans created by the global GlobeTrotter traveler community and clone them directly to your account.
               </p>
             </div>
@@ -215,20 +215,20 @@ function AppContent() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-900 bg-slate-950/80 py-8 mt-auto no-print">
+      <footer className="w-full border-t border-slate-200 bg-white py-8 mt-auto no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© 2026 GlobeTrotter. Built for the Odoo Hackathon by Vatsal Pithadia.</p>
           <div className="flex items-center gap-4">
-            <button onClick={() => handleNavigate('dashboard')} className="hover:text-slate-300">
+            <button onClick={() => handleNavigate('dashboard')} className="hover:text-slate-900">
               Dashboard
             </button>
-            <button onClick={() => handleNavigate('explore-cities')} className="hover:text-slate-300">
+            <button onClick={() => handleNavigate('explore-cities')} className="hover:text-slate-900">
               Destinations
             </button>
-            <button onClick={() => handleNavigate('activity-catalog')} className="hover:text-slate-300">
+            <button onClick={() => handleNavigate('activity-catalog')} className="hover:text-slate-900">
               Experiences
             </button>
-            <button onClick={() => handleNavigate('admin')} className="text-amber-400/80 hover:text-amber-300">
+            <button onClick={() => handleNavigate('admin')} className="text-amber-700 hover:text-amber-800 font-semibold">
               Admin Portal
             </button>
           </div>

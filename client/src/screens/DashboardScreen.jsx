@@ -69,40 +69,33 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
   return (
     <div className="space-y-10 pb-16 animate-fade-in">
       {/* 1. Hero Welcome Hub */}
-      <div className="relative rounded-3xl overflow-hidden glass-panel border border-slate-700/60 p-8 sm:p-10 bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-purple-950/80">
-        <div
-          className="absolute -right-20 -bottom-20 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"
-        />
-        <div
-          className="absolute -left-20 -top-20 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"
-        />
-
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="relative rounded-3xl bg-white border border-slate-200 shadow-sm p-6 sm:p-8 overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold">
-              <Sparkles className="w-3.5 h-3.5" /> Welcome to GlobeTrotter
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Welcome to GlobeTrotter
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Hello, {user ? user.name : 'Traveler'}! 🌍
             </h1>
-            <p className="text-slate-300 text-sm sm:text-base max-w-xl">
-              Where would you like to explore next? Build multi-city itineraries, estimate real-time budgets, and turn dream travels into reality.
+            <p className="text-slate-600 text-xs sm:text-sm max-w-xl leading-relaxed">
+              Design multi-city itineraries, estimate real-time trip budgets, and discover curated global travel experiences.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onOpenNewTrip}
-              className="flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold rounded-2xl shadow-xl shadow-indigo-600/30 hover:scale-102 active:scale-98 transition"
+              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
               <span>Plan New Trip</span>
             </button>
             <button
               onClick={() => onNavigate('explore-cities')}
-              className="flex items-center gap-2 px-5 py-3.5 bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white text-sm font-semibold rounded-2xl border border-slate-700 transition"
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 transition"
             >
-              <Compass className="w-4 h-4 text-indigo-400" />
+              <Compass className="w-4 h-4 text-slate-600" />
               <span>Explore Cities</span>
             </button>
           </div>
@@ -110,22 +103,22 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
 
         {/* User Key Metrics Ribbon */}
         {user && stats && (
-          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-800/80">
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-xs font-semibold text-slate-400">Total Trips</span>
-              <p className="text-2xl font-black text-white mt-1">{stats.total_trips || 0}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-slate-100">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Trips</span>
+              <p className="text-2xl font-black text-slate-900 mt-1">{stats.total_trips || 0}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-xs font-semibold text-slate-400">Cities Visited</span>
-              <p className="text-2xl font-black text-indigo-400 mt-1">{stats.total_cities || 0}</p>
+            <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Cities Visited</span>
+              <p className="text-2xl font-black text-indigo-700 mt-1">{stats.total_cities || 0}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-xs font-semibold text-slate-400">Wishlist Saved</span>
-              <p className="text-2xl font-black text-rose-400 mt-1">{stats.wishlist_count || 0}</p>
+            <div className="p-4 rounded-2xl bg-rose-50/50 border border-rose-100">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600">Wishlist Saved</span>
+              <p className="text-2xl font-black text-rose-700 mt-1">{stats.wishlist_count || 0}</p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-xs font-semibold text-slate-400">Budget Managed</span>
-              <p className="text-2xl font-black text-emerald-400 mt-1">
+            <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Budget Managed</span>
+              <p className="text-2xl font-black text-emerald-700 mt-1">
                 ${Number(stats.total_budget_managed || 0).toLocaleString()}
               </p>
             </div>
@@ -136,14 +129,16 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
       {/* 2. Recent & Upcoming Itineraries */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Plane className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-xl font-bold text-white tracking-tight">Your Recent Itineraries</h2>
+          <div className="flex items-center gap-2">
+            <Plane className="w-5 h-5 text-indigo-600" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+              Your Recent Itineraries
+            </h2>
           </div>
           {recentTrips.length > 0 && (
             <button
               onClick={() => onNavigate('my-trips')}
-              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition"
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition"
             >
               <span>View All Trips</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -154,23 +149,23 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 rounded-2xl bg-slate-800/40 animate-pulse border border-slate-800" />
+              <div key={i} className="h-64 rounded-2xl bg-slate-100 animate-pulse border border-slate-200" />
             ))}
           </div>
         ) : recentTrips.length === 0 ? (
-          <div className="p-10 rounded-3xl glass-card text-center flex flex-col items-center justify-center space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Compass className="w-7 h-7" />
+          <div className="p-10 rounded-3xl white-card text-center flex flex-col items-center justify-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <Compass className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white">No Trips Planned Yet</h3>
-              <p className="text-xs text-slate-400 max-w-sm">
-                Get started by creating your first personalized multi-city travel itinerary with automatic budget estimation.
+              <h3 className="text-base font-bold text-slate-900">No Trips Planned Yet</h3>
+              <p className="text-xs text-slate-500 max-w-sm">
+                Get started by creating your first multi-city travel itinerary with automatic budget estimation.
               </p>
             </div>
             <button
               onClick={onOpenNewTrip}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition"
             >
               + Create First Trip
             </button>
@@ -180,38 +175,38 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
             {recentTrips.map((trip) => (
               <div
                 key={trip.id}
-                className="group rounded-3xl glass-card overflow-hidden flex flex-col justify-between border border-slate-800/80 hover:border-indigo-500/40 transition-all duration-300"
+                className="group rounded-3xl white-card overflow-hidden flex flex-col justify-between"
               >
                 {/* Trip Card Image Header */}
-                <div className="relative h-44 w-full overflow-hidden bg-slate-800">
+                <div className="relative h-44 w-full overflow-hidden bg-slate-100">
                   <img
                     src={trip.cover_image}
                     alt={trip.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
                   {/* Status Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-lg bg-slate-900/80 backdrop-blur-md text-indigo-300 border border-indigo-500/30">
+                    <span className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-lg bg-white/95 backdrop-blur-md text-indigo-700 shadow-xs">
                       {trip.status}
                     </span>
                   </div>
 
                   {/* Travel Style */}
                   <div className="absolute top-3 right-3">
-                    <span className="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-900/80 backdrop-blur-md text-slate-200 border border-slate-700">
+                    <span className="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-md text-slate-700 shadow-xs">
                       {trip.travel_style || 'Explorer'}
                     </span>
                   </div>
 
                   {/* Stops Preview in Bottom Header */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white font-semibold drop-shadow-md">
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white font-semibold drop-shadow-sm">
                     <span className="flex items-center gap-1 truncate max-w-[200px]">
-                      <MapPin className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-indigo-300 shrink-0" />
                       {trip.destinations_preview || `${trip.stop_count || 0} Stops`}
                     </span>
-                    <span className="text-[11px] text-slate-300">
+                    <span className="text-[11px] text-slate-200">
                       {trip.activity_count || 0} activities
                     </span>
                   </div>
@@ -220,11 +215,11 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
                 {/* Body Details */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="text-base font-bold text-white line-clamp-1 group-hover:text-indigo-300 transition">
+                    <h3 className="text-base font-bold text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition">
                       {trip.title}
                     </h3>
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       <span>
                         {trip.start_date} ➔ {trip.end_date}
                       </span>
@@ -239,16 +234,16 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
                   />
 
                   {/* Action Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
                     <button
                       onClick={() => onSelectTrip(trip.id, 'builder')}
-                      className="py-2 px-3 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-bold border border-indigo-500/30 transition text-center"
+                      className="py-2 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-100 transition text-center"
                     >
                       Builder
                     </button>
                     <button
                       onClick={() => onSelectTrip(trip.id, 'view')}
-                      className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold border border-slate-700 transition text-center flex items-center justify-center gap-1"
+                      className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition text-center flex items-center justify-center gap-1"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>Itinerary</span>
@@ -261,16 +256,18 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
         )}
       </section>
 
-      {/* 3. Recommended / Trending Global Destinations */}
+      {/* 3. Popular Global Destinations */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Compass className="w-5 h-5 text-purple-400" />
-            <h2 className="text-xl font-bold text-white tracking-tight">Popular Global Destinations</h2>
+          <div className="flex items-center gap-2">
+            <Compass className="w-5 h-5 text-indigo-600" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+              Popular Global Destinations
+            </h2>
           </div>
           <button
             onClick={() => onNavigate('explore-cities')}
-            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition"
+            className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition"
           >
             <span>Explore All 50+ Cities</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -281,53 +278,50 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
           {popularCities.map((city) => (
             <div
               key={city.id}
-              className="group rounded-3xl glass-card overflow-hidden border border-slate-800/80 hover:border-purple-500/40 transition-all duration-300 flex flex-col justify-between"
+              className="group rounded-3xl white-card overflow-hidden flex flex-col justify-between"
             >
-              <div className="relative h-44 w-full overflow-hidden bg-slate-800">
+              <div className="relative h-44 w-full overflow-hidden bg-slate-100">
                 <img
                   src={city.image_url}
                   alt={city.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
-                {/* Continent & Cost Index Badge */}
                 <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                  <span className="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-900/80 backdrop-blur-md text-purple-300 border border-purple-500/30">
+                  <span className="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-white/95 text-indigo-700 shadow-xs">
                     {city.continent}
                   </span>
-                  <span className="px-2.5 py-1 text-[10px] font-extrabold rounded-lg bg-slate-900/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30">
+                  <span className="px-2.5 py-1 text-[10px] font-extrabold rounded-lg bg-white/95 text-emerald-700 shadow-xs">
                     {city.cost_index}
                   </span>
                 </div>
 
-                {/* Wishlist Button */}
                 <button
                   onClick={() => handleToggleWishlist(city.id)}
-                  className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition ${
+                  className={`absolute top-3 right-3 p-2 rounded-xl transition ${
                     city.is_saved
-                      ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/40'
-                      : 'bg-slate-900/70 text-slate-300 hover:text-white hover:bg-slate-900'
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'bg-white/90 text-slate-700 hover:text-rose-600 hover:bg-white'
                   }`}
                 >
-                  <Heart className={`w-4 h-4 ${city.is_saved ? 'fill-white' : ''}`} />
+                  <Heart className={`w-3.5 h-3.5 ${city.is_saved ? 'fill-white' : ''}`} />
                 </button>
 
-                {/* City name & Country */}
-                <div className="absolute bottom-3 left-3 right-3">
-                  <h3 className="text-lg font-bold text-white leading-snug drop-shadow-md">
+                <div className="absolute bottom-3 left-3 right-3 text-white">
+                  <h3 className="text-base font-extrabold leading-snug drop-shadow-sm">
                     {city.name}
                   </h3>
-                  <p className="text-xs text-slate-300 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-purple-400" />
+                  <p className="text-xs text-slate-200 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-indigo-300" />
                     {city.country}
                   </p>
                 </div>
               </div>
 
-              {/* City Card Body */}
+              {/* Card Body */}
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                   {city.description}
                 </p>
 
@@ -336,22 +330,22 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
                     city.tags.slice(0, 3).map((tag, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-slate-800 text-slate-300 border border-slate-700"
+                        className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-slate-100 text-slate-600"
                       >
                         #{tag}
                       </span>
                     ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-800/80">
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                   <div>
                     <span className="text-[10px] uppercase text-slate-400 font-bold block">Avg Daily Cost</span>
-                    <span className="text-xs font-bold text-emerald-400">${city.avg_daily_cost}/day</span>
+                    <span className="text-xs font-bold text-emerald-600">${city.avg_daily_cost}/day</span>
                   </div>
 
                   <button
                     onClick={() => onQuickAddCity(city)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-600 hover:text-white border border-indigo-500/30 rounded-xl transition"
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add to Trip</span>
@@ -366,13 +360,15 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
       {/* 4. Inspiring Community Itineraries */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Share2 className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-xl font-bold text-white tracking-tight">Public Community Itineraries</h2>
+          <div className="flex items-center gap-2">
+            <Share2 className="w-5 h-5 text-indigo-600" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+              Community Itineraries
+            </h2>
           </div>
           <button
             onClick={() => onNavigate('community')}
-            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition"
+            className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition"
           >
             <span>Browse Community Feed</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -383,33 +379,33 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
           {communityTrips.slice(0, 3).map((commTrip) => (
             <div
               key={commTrip.id}
-              className="rounded-3xl glass-card p-5 border border-slate-800/80 space-y-4 hover:border-indigo-500/40 transition"
+              className="rounded-3xl white-card p-5 space-y-3 flex flex-col justify-between"
             >
               <div className="flex items-center gap-3">
                 <img
                   src={commTrip.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'}
                   alt={commTrip.author_name}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/30"
+                  className="w-9 h-9 rounded-full object-cover ring-1 ring-slate-200"
                 />
                 <div>
-                  <h4 className="text-sm font-bold text-white truncate">{commTrip.author_name}</h4>
-                  <span className="text-[11px] text-slate-400">Created {commTrip.title}</span>
+                  <h4 className="text-xs font-bold text-slate-900 truncate">{commTrip.author_name}</h4>
+                  <span className="text-[11px] text-slate-500">Created {commTrip.title}</span>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-semibold text-indigo-300 flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                <p className="text-xs font-semibold text-indigo-700 flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-indigo-600" />
                   {commTrip.route_preview || `${commTrip.stop_count} stops`}
                 </p>
-                <p className="text-xs text-slate-300 line-clamp-2">{commTrip.description}</p>
+                <p className="text-xs text-slate-600 line-clamp-2">{commTrip.description}</p>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs text-slate-400">
-                <span>💰 Budget: ${commTrip.total_budget}</span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                <span className="text-slate-500">💰 Budget: ${commTrip.total_budget}</span>
                 <button
                   onClick={() => onNavigate('shared-view', commTrip.share_code)}
-                  className="text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-1"
+                  className="text-indigo-600 hover:text-indigo-700 font-bold flex items-center gap-1"
                 >
                   <span>Explore Plan</span>
                   <ArrowRight className="w-3 h-3" />

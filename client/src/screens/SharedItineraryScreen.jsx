@@ -67,11 +67,11 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
     try {
       const res = await api.cloneSharedTrip(shareCode);
       confetti({
-        particleCount: 100,
-        spread: 80,
+        particleCount: 80,
+        spread: 70,
         origin: { y: 0.6 }
       });
-      notify.success('🎉 Trip successfully cloned to your itineraries!');
+      notify.success('Trip successfully cloned to your itineraries!');
       onSelectTrip(res.trip.id, 'builder');
     } catch (err) {
       notify.error('Failed to clone trip');
@@ -82,7 +82,7 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
 
   const shareOnWhatsApp = () => {
     const text = encodeURIComponent(
-      `Check out this awesome travel itinerary "${tripData?.trip?.title}" on GlobeTrotter: ${window.location.href}`
+      `Check out this travel itinerary "${tripData?.trip?.title}" on GlobeTrotter: ${window.location.href}`
     );
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
@@ -97,23 +97,23 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
   if (loading) {
     return (
       <div className="py-24 text-center space-y-3">
-        <Compass className="w-10 h-10 text-indigo-400 animate-spin mx-auto" />
-        <p className="text-sm font-semibold text-slate-400">Loading public travel itinerary...</p>
+        <Compass className="w-8 h-8 text-indigo-600 animate-spin mx-auto" />
+        <p className="text-xs font-semibold text-slate-500">Loading public travel itinerary...</p>
       </div>
     );
   }
 
   if (!tripData) {
     return (
-      <div className="py-24 text-center space-y-4">
-        <Compass className="w-12 h-12 text-slate-600 mx-auto" />
-        <h2 className="text-xl font-bold text-white">Itinerary Not Found</h2>
-        <p className="text-xs text-slate-400 max-w-sm mx-auto">
+      <div className="py-24 text-center space-y-3">
+        <Compass className="w-12 h-12 text-slate-400 mx-auto" />
+        <h2 className="text-xl font-bold text-slate-900">Itinerary Not Found</h2>
+        <p className="text-xs text-slate-500 max-w-sm mx-auto">
           The link may have expired or the author made this trip private.
         </p>
         <button
           onClick={() => onNavigate('dashboard')}
-          className="px-5 py-2.5 bg-indigo-600 text-white text-xs font-bold rounded-xl"
+          className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-xs"
         >
           Explore Community
         </button>
@@ -123,7 +123,6 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
 
   const { trip, stops, activities } = tripData;
 
-  // Group activities by date
   const activitiesByDate = {};
   activities.forEach((a) => {
     if (!activitiesByDate[a.scheduled_date]) activitiesByDate[a.scheduled_date] = [];
@@ -132,106 +131,101 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
   const sortedDates = Object.keys(activitiesByDate).sort();
 
   return (
-    <div className="max-w-5xl mx-auto space-y-10 pb-24 animate-fade-in">
-      {/* 1. Public Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden glass-panel border border-slate-700/60 shadow-2xl">
+    <div className="max-w-5xl mx-auto space-y-8 pb-24 animate-fade-in">
+      {/* Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden white-panel shadow-sm">
         <div className="relative h-72 sm:h-96 w-full overflow-hidden">
           <img
             src={trip.cover_image}
             alt={trip.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent" />
 
-          {/* Top Badge */}
           <div className="absolute top-6 left-6">
-            <span className="px-3 py-1 rounded-full bg-indigo-600/90 text-white text-xs font-extrabold shadow-lg backdrop-blur-md">
+            <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold shadow-sm">
               Public Itinerary
             </span>
           </div>
 
-          {/* Hero Bottom Details */}
-          <div className="absolute bottom-6 left-6 right-6 space-y-3">
+          <div className="absolute bottom-6 left-6 right-6 space-y-2 text-white">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md text-slate-200 border border-slate-700 text-xs font-bold">
+              <span className="px-2.5 py-0.5 rounded-lg bg-white/90 text-slate-800 text-xs font-bold">
                 {trip.travel_style || 'Explorer'}
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-sm">
               {trip.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-200 font-medium pt-1">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-200 font-medium pt-0.5">
               <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-indigo-400" />
+                <Calendar className="w-4 h-4 text-indigo-300" />
                 {trip.start_date} ➔ {trip.end_date}
               </span>
               <span className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-purple-400" />
+                <MapPin className="w-4 h-4 text-purple-300" />
                 {stops.length} Stops ({stops.map((s) => s.city_name).join(' • ')})
               </span>
               <span className="flex items-center gap-1.5">
-                <DollarSign className="w-4 h-4 text-emerald-400" />
-                Estimated: ${trip.total_budget}
+                <DollarSign className="w-4 h-4 text-emerald-300" />
+                Budget: ${trip.total_budget}
               </span>
             </div>
           </div>
         </div>
 
         {/* Action & Author Bar */}
-        <div className="p-6 bg-slate-900/90 border-t border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          {/* Author Card */}
+        <div className="p-6 bg-white border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-3.5">
             <img
               src={trip.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'}
               alt={trip.author_name}
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-500/40"
+              className="w-11 h-11 rounded-full object-cover ring-1 ring-slate-200"
             />
             <div>
-              <p className="text-xs text-slate-400 font-semibold">Curated by</p>
-              <h3 className="text-sm font-bold text-white">{trip.author_name}</h3>
-              {trip.author_bio && <p className="text-[11px] text-slate-400">{trip.author_bio}</p>}
+              <p className="text-[11px] text-slate-500 font-semibold">Curated by</p>
+              <h3 className="text-sm font-bold text-slate-900">{trip.author_name}</h3>
+              {trip.author_bio && <p className="text-[11px] text-slate-500 max-w-sm">{trip.author_bio}</p>}
             </div>
           </div>
 
-          {/* Clone & Share Buttons */}
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleCloneTrip}
               disabled={cloning}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold rounded-2xl shadow-xl shadow-indigo-600/30 transition hover:scale-102 active:scale-98"
+              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition active:scale-98"
             >
               <Copy className="w-4 h-4" />
               <span>{cloning ? 'Cloning Itinerary...' : 'Clone Trip to My Account'}</span>
             </button>
 
-            {/* Social Share Group */}
-            <div className="flex items-center gap-1.5 bg-slate-800 p-1 rounded-2xl border border-slate-700">
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
               <button
                 onClick={handleCopyLink}
-                className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700 transition"
+                className="p-2 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-white transition"
                 title="Copy Link"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
               </button>
               <button
                 onClick={shareOnWhatsApp}
-                className="p-2 rounded-xl text-emerald-400 hover:bg-slate-700 transition"
+                className="p-2 rounded-lg text-emerald-600 hover:bg-white transition"
                 title="Share on WhatsApp"
               >
                 <MessageCircle className="w-4 h-4" />
               </button>
               <button
                 onClick={shareOnTwitter}
-                className="p-2 rounded-xl text-sky-400 hover:bg-slate-700 transition"
+                className="p-2 rounded-lg text-sky-600 hover:bg-white transition"
                 title="Share on Twitter / X"
               >
                 <Send className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setShowQR(!showQR)}
-                className="p-2 rounded-xl text-purple-400 hover:bg-slate-700 transition"
+                className="p-2 rounded-lg text-purple-600 hover:bg-white transition"
                 title="Show QR Code"
               >
                 <QrCode className="w-4 h-4" />
@@ -241,36 +235,36 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
         </div>
       </div>
 
-      {/* QR Code Popover */}
+      {/* QR Code */}
       {showQR && (
-        <div className="p-6 rounded-3xl glass-card border border-indigo-500/30 text-center space-y-4 max-w-sm mx-auto animate-scale-up">
-          <h4 className="text-sm font-bold text-white">Scan to Open on Mobile</h4>
-          <div className="p-4 bg-white rounded-2xl inline-block shadow-xl">
+        <div className="p-6 rounded-3xl white-card border border-indigo-200 text-center space-y-3 max-w-sm mx-auto shadow-lg animate-scale-up">
+          <h4 className="text-xs font-bold text-slate-900">Scan to Open on Mobile</h4>
+          <div className="p-3 bg-white rounded-xl inline-block border border-slate-100 shadow-xs">
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(window.location.href)}`}
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(window.location.href)}`}
               alt="QR Code"
-              className="w-44 h-44 mx-auto"
+              className="w-40 h-40 mx-auto"
             />
           </div>
-          <p className="text-[11px] text-slate-400">Share this code with your travel companions!</p>
+          <p className="text-[11px] text-slate-500">Share this code with your travel companions!</p>
         </div>
       )}
 
-      {/* 2. Interactive Route Map Preview */}
-      <div className="rounded-3xl glass-card p-6 border border-slate-800 space-y-4">
-        <h3 className="text-base font-bold text-white flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-indigo-400" />
+      {/* Route Map Preview */}
+      <div className="rounded-3xl white-panel p-6 space-y-3">
+        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-indigo-600" />
           Interactive Destination Route Map
         </h3>
-        <div className="h-72 rounded-2xl overflow-hidden">
+        <div className="h-64 rounded-2xl overflow-hidden border border-slate-200">
           <MapViewer stops={stops} height="100%" />
         </div>
       </div>
 
-      {/* 3. Day by Day Breakdown */}
+      {/* Day by Day Plan */}
       <div className="space-y-6">
-        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-indigo-400" />
+        <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-indigo-600" />
           Day-by-Day Journey Plan
         </h3>
 
@@ -279,39 +273,39 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
           return (
             <div key={dateStr} className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-xl bg-indigo-600 text-white font-black text-xs">
+                <span className="px-3 py-1 rounded-xl bg-slate-900 text-white font-extrabold text-xs shadow-xs">
                   Day {dIdx + 1}
                 </span>
-                <span className="text-sm font-bold text-slate-200">
+                <span className="text-sm font-bold text-slate-800">
                   {new Date(dateStr).toLocaleDateString('en-US', {
                     weekday: 'long',
                     month: 'short',
                     day: 'numeric'
                   })}
                 </span>
-                <div className="flex-1 h-px bg-slate-800" />
+                <div className="flex-1 h-px bg-slate-200" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {acts.map((act) => (
                   <div
                     key={act.id}
-                    className="p-4 rounded-2xl glass-card border border-slate-800 flex items-center gap-4"
+                    className="p-4 rounded-2xl white-card flex items-center gap-4"
                   >
                     {act.image_url && (
                       <img
                         src={act.image_url}
                         alt={act.title}
-                        className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-700 shrink-0"
+                        className="w-14 h-14 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
                       />
                     )}
-                    <div className="space-y-1 truncate">
-                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-indigo-300 border border-indigo-500/30">
+                    <div className="space-y-0.5 truncate">
+                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">
                         {act.category}
                       </span>
-                      <h4 className="text-sm font-bold text-white truncate">{act.title}</h4>
-                      <p className="text-[11px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-500" />
+                      <h4 className="text-xs font-bold text-slate-900 truncate">{act.title}</h4>
+                      <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-slate-400" />
                         {act.scheduled_time} ({act.duration_mins}m)
                       </p>
                     </div>

@@ -1,230 +1,266 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import { Bar, Doughnut } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
 import {
   Shield,
   Users,
   Plane,
   MapPin,
   Sparkles,
-  TrendingUp,
-  DollarSign,
+  BarChart3,
+  PieChart as PieIcon,
   Trash2,
   RefreshCw,
-  Eye,
-  Calendar,
+  Search,
+  Database,
+  Coins,
   CheckCircle2,
-  Layers,
-  Database
+  AlertTriangle
 } from 'lucide-react';
 
-export default function AdminDashboardScreen({ onSelectTrip, onNavigate }) {
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+
+export default function AdminDashboardScreen({ onNavigate }) {
+  const { user } = useAuth();
   const notify = useNotification();
 
-  const [stats, setStats] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [trips, setTrips] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [usersList, setUsersList] = useState([]);
+  const [tripsList, setTripsList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' | 'users' | 'trips'
-  const [reseeding, setReseeding] = useState(false);
 
-  // Delete trip state
-  const [tripToDelete, setTripToDelete] = useState(null);
+  const [searchUser, setSearchUser] = useState('');
+  const [searchTrip, setSearchTrip] = useState('');
+  const [activeTab, setActiveTab] = useState('analytics');
+
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    loadAdminData();
-  }, []);
+    if (user?.role === 'admin') {
+      loadAdminData();
+    }
+  }, [user]);
 
   const loadAdminData = async () => {
     setLoading(true);
     try {
-      const [statsRes, usersRes, tripsRes] = await Promise.all([
+      const [statsRes, uRes, tRes] = await Promise.all([
         api.getAdminStats(),
         api.getAdminUsers(),
         api.getAdminTrips()
       ]);
-      setStats(statsRes);
-      setUsers(usersRes.users || []);
-      setTrips(tripsRes.trips || []);
+      setAnalytics(statsRes.stats);
+      setUsersList(uRes.users || []);
+      setTripsList(tRes.trips || []);
     } catch (err) {
-      notify.error(err.message || 'Admin authorization required');
+      notify.error('Admin data load failed: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleReseed = async () => {
-    if (!window.confirm('Reseed database back to default sample state?')) return;
-    setReseeding(true);
+    if (!window.confirm('Reseed database with fresh demo data?')) return;
     try {
       await api.reseedDatabase();
-      notify.success('Database reseeded successfully with demo data!');
+      notify.success('Database reseeded successfully!');
       loadAdminData();
     } catch (e) {
-      notify.error('Reseed failed');
-    } finally {
-      setReseeding(false);
+      notify.error('Reseed failed: ' + e.message);
     }
   };
 
-  const handleDeleteTripConfirm = async () => {
-    if (!tripToDelete) return;
+  const handleDeleteTripExecute = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      await api.deleteAdminTrip(tripToDelete.id);
-      notify.success('Trip deleted by admin');
-      setTrips((prev) => prev.filter((t) => t.id !== tripToDelete.id));
-      setTripToDelete(null);
-    } catch (e) {
-      notify.error('Failed to delete trip');
+      await api.deleteAdminTrip(deleteTarget.id);
+      notify.success(`Trip "${deleteTarget.title}" removed by admin`);
+      setTripsList((prev) => prev.filter((t) => t.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err) {
+      notify.error('Failed to remove trip');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  if (loading || !stats) {
+  if (user?.role !== 'admin') {
     return (
-      <div className="py-24 text-center space-y-3">
-        <Shield className="w-10 h-10 text-amber-400 animate-pulse mx-auto" />
-        <p className="text-sm font-semibold text-slate-400">Loading Platform Intelligence & Analytics...</p>
+      <div className="py-24 text-center space-y-4">
+        <Shield className="w-12 h-12 text-amber-500 mx-auto" />
+        <h2 className="text-xl font-bold text-slate-900">Administrator Access Required</h2>
+        <p className="text-xs text-slate-500 max-w-md mx-auto">
+          Please sign in with the Admin Demo account (<code className="text-indigo-600 font-bold">admin@globetrotter.io</code>) to view the analytics dashboard.
+        </p>
       </div>
     );
   }
 
-  const { counts, continentDistribution, topCities, activityCategoryBreakdown } = stats;
+  if (loading || !analytics) {
+    return (
+      <div className="py-24 text-center space-y-3">
+        <Shield className="w-8 h-8 text-indigo-600 animate-spin mx-auto" />
+        <p className="text-xs font-semibold text-slate-500">Aggregating platform metrics...</p>
+      </div>
+    );
+  }
 
-  // Chart: Top Cities
-  const citiesChartData = {
-    labels: topCities.map((c) => c.city_name),
+  const topCitiesChart = {
+    labels: analytics.topCities.map((c) => c.name),
     datasets: [
       {
-        label: 'Times Planned in Itineraries',
-        data: topCities.map((c) => c.planned_count),
-        backgroundColor: '#6366f1',
+        label: 'Times Scheduled in Trips',
+        data: analytics.topCities.map((c) => c.planned_count),
+        backgroundColor: '#4f46e5',
         borderRadius: 8
       }
     ]
   };
 
-  // Chart: Continent Doughnut
-  const continentChartData = {
-    labels: continentDistribution.map((c) => c.continent),
+  const continentDoughnut = {
+    labels: analytics.continentDistribution.map((c) => c.continent),
     datasets: [
       {
-        data: continentDistribution.map((c) => c.stop_count),
-        backgroundColor: ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ec4899'],
-        borderColor: '#0f172a',
-        borderWidth: 2
+        data: analytics.continentDistribution.map((c) => c.count),
+        backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
       }
     ]
   };
 
+  const filteredUsers = usersList.filter(
+    (u) =>
+      u.name.toLowerCase().includes(searchUser.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchUser.toLowerCase())
+  );
+
+  const filteredTrips = tripsList.filter(
+    (t) =>
+      t.title.toLowerCase().includes(searchTrip.toLowerCase()) ||
+      t.author_name.toLowerCase().includes(searchTrip.toLowerCase())
+  );
+
   return (
-    <div className="space-y-8 pb-20 animate-fade-in">
+    <div className="space-y-8 pb-24 animate-fade-in">
       {/* Admin Header */}
-      <div className="rounded-3xl glass-panel p-6 sm:p-8 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-amber-950/20 via-slate-900/90 to-indigo-950/20">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
-            <Shield className="w-7 h-7" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 text-[9px] font-black uppercase rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Administrator View
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
-              Platform Analytics & Moderation
+      <div className="rounded-3xl white-panel p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-amber-600" />
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Platform Admin & Analytics
             </h1>
           </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Real-time traveler metrics, popular destinations rankings, moderation tables, and database maintenance.
+          </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start md:self-auto">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleReseed}
-            disabled={reseeding}
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 transition shadow"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition"
           >
-            <Database className="w-4 h-4" />
-            <span>{reseeding ? 'Reseeding...' : 'Reseed Demo Data'}</span>
+            <Database className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Reseed Demo DB</span>
+          </button>
+          <button
+            onClick={loadAdminData}
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition"
+            title="Refresh Metrics"
+          >
+            <RefreshCw className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* KPI Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="p-5 rounded-2xl glass-card border border-slate-800">
-          <span className="text-xs font-semibold text-slate-400">Total Travelers</span>
-          <p className="text-2xl font-black text-white mt-1">{counts.total_users || 0}</p>
+      {/* KPI Ribbon */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div className="p-5 rounded-2xl white-card">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Registered Users</span>
+          <p className="text-2xl font-black text-slate-900 mt-1">{analytics.totalUsers}</p>
         </div>
-        <div className="p-5 rounded-2xl glass-card border border-slate-800">
-          <span className="text-xs font-semibold text-slate-400">Total Trips Created</span>
-          <p className="text-2xl font-black text-indigo-400 mt-1">{counts.total_trips || 0}</p>
+        <div className="p-5 rounded-2xl white-card">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Trips</span>
+          <p className="text-2xl font-black text-indigo-700 mt-1">{analytics.totalTrips}</p>
         </div>
-        <div className="p-5 rounded-2xl glass-card border border-slate-800">
-          <span className="text-xs font-semibold text-slate-400">Total Stops Planned</span>
-          <p className="text-2xl font-black text-purple-400 mt-1">{counts.total_stops || 0}</p>
+        <div className="p-5 rounded-2xl white-card">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Destination Stops</span>
+          <p className="text-2xl font-black text-purple-700 mt-1">{analytics.totalStops}</p>
         </div>
-        <div className="p-5 rounded-2xl glass-card border border-slate-800">
-          <span className="text-xs font-semibold text-slate-400">Activities Scheduled</span>
-          <p className="text-2xl font-black text-emerald-400 mt-1">{counts.total_activities || 0}</p>
+        <div className="p-5 rounded-2xl white-card">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Activities Scheduled</span>
+          <p className="text-2xl font-black text-cyan-700 mt-1">{analytics.totalActivities}</p>
         </div>
-        <div className="p-5 rounded-2xl glass-card border border-slate-800 col-span-2 lg:col-span-1">
-          <span className="text-xs font-semibold text-slate-400">Total Volume Tracked</span>
-          <p className="text-2xl font-black text-amber-400 mt-1">
-            ${Number(counts.total_budget_volume || 0).toLocaleString()}
+        <div className="p-5 rounded-2xl white-card">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Budget Volume</span>
+          <p className="text-2xl font-black text-emerald-700 mt-1">
+            ${Number(analytics.totalBudgetVolume || 0).toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Sub Tabs */}
-      <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 w-fit">
+      {/* Tab Navigation */}
+      <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 w-fit">
         <button
           onClick={() => setActiveTab('analytics')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'analytics' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+          className={`px-4 py-1.5 text-xs font-bold rounded-xl transition ${
+            activeTab === 'analytics' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          <TrendingUp className="w-4 h-4" />
-          <span>Analytics & Visuals</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'users' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>Users Directory ({users.length})</span>
+          Analytics & Trends
         </button>
         <button
           onClick={() => setActiveTab('trips')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'trips' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+          className={`px-4 py-1.5 text-xs font-bold rounded-xl transition ${
+            activeTab === 'trips' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          <Plane className="w-4 h-4" />
-          <span>All Trips Moderation ({trips.length})</span>
+          Trip Moderation ({tripsList.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('users')}
+          className={`px-4 py-1.5 text-xs font-bold rounded-xl transition ${
+            activeTab === 'users' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          User Directory ({usersList.length})
         </button>
       </div>
 
-      {/* TAB 1: ANALYTICS CHARTS */}
+      {/* 1. Analytics & Trends Tab */}
       {activeTab === 'analytics' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Top Destination Cities Bar Chart */}
-          <div className="lg:col-span-7 rounded-3xl glass-card p-6 border border-slate-800 space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-indigo-400" />
-              Most Planned Destination Cities
-            </h3>
+          <div className="lg:col-span-7 rounded-3xl white-card p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-base font-bold text-slate-900">Most Planned Destinations</h3>
+            </div>
             <div className="h-64">
               <Bar
-                data={citiesChartData}
+                data={topCitiesChart}
                 options={{
                   responsive: true,
                   maintainAspectRatio: false,
                   scales: {
-                    x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } },
-                    y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+                    y: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { color: '#f1f5f9' } }
                   },
                   plugins: { legend: { display: false } }
                 }}
@@ -232,20 +268,19 @@ export default function AdminDashboardScreen({ onSelectTrip, onNavigate }) {
             </div>
           </div>
 
-          {/* Continent Distribution Doughnut */}
-          <div className="lg:col-span-5 rounded-3xl glass-card p-6 border border-slate-800 space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Layers className="w-5 h-5 text-purple-400" />
-              Regional Stop Distribution
-            </h3>
-            <div className="h-64 flex items-center justify-center">
+          <div className="lg:col-span-5 rounded-3xl white-card p-6 space-y-4 flex flex-col justify-between">
+            <div className="flex items-center gap-2">
+              <PieIcon className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-base font-bold text-slate-900">Regional Stop Share</h3>
+            </div>
+            <div className="h-60 flex items-center justify-center">
               <Doughnut
-                data={continentChartData}
+                data={continentDoughnut}
                 options={{
                   responsive: true,
                   maintainAspectRatio: false,
                   plugins: {
-                    legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } }
+                    legend: { position: 'bottom', labels: { color: '#334155', font: { size: 11 } } }
                   }
                 }}
               />
@@ -254,105 +289,54 @@ export default function AdminDashboardScreen({ onSelectTrip, onNavigate }) {
         </div>
       )}
 
-      {/* TAB 2: USER DIRECTORY TABLE */}
-      {activeTab === 'users' && (
-        <div className="rounded-3xl glass-card p-6 border border-slate-800 space-y-4">
-          <h3 className="text-base font-bold text-white">Registered Users Directory</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
-                <tr>
-                  <th className="py-3 px-4">User</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Currency</th>
-                  <th className="py-3 px-4">Trips Created</th>
-                  <th className="py-3 px-4">Wishlist Items</th>
-                  <th className="py-3 px-4">Joined Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-200">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-800/40 transition">
-                    <td className="py-3 px-4 flex items-center gap-3">
-                      <img
-                        src={u.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed=user'}
-                        alt={u.name}
-                        className="w-8 h-8 rounded-full object-cover ring-1 ring-slate-700 shrink-0"
-                      />
-                      <div>
-                        <p className="font-bold text-white">{u.name}</p>
-                        <p className="text-[11px] text-slate-400">{u.email}</p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                          u.role === 'admin'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                        }`}
-                      >
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 font-semibold">{u.currency}</td>
-                    <td className="py-3 px-4 font-bold text-indigo-400">{u.trips_count}</td>
-                    <td className="py-3 px-4 font-bold text-rose-400">{u.wishlist_count}</td>
-                    <td className="py-3 px-4 text-slate-400">
-                      {new Date(u.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: ALL TRIPS MODERATION TABLE */}
+      {/* 2. Trip Moderation Tab */}
       {activeTab === 'trips' && (
-        <div className="rounded-3xl glass-card p-6 border border-slate-800 space-y-4">
-          <h3 className="text-base font-bold text-white">All Platform Itineraries</h3>
+        <div className="rounded-3xl white-card p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900">Platform Trip Directory</h3>
+            <input
+              type="text"
+              value={searchTrip}
+              onChange={(e) => setSearchTrip(e.target.value)}
+              placeholder="Filter trips..."
+              className="bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-600"
+            />
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+              <thead className="border-b border-slate-100 text-slate-500 font-bold uppercase text-[10px]">
                 <tr>
-                  <th className="py-3 px-4">Trip Title</th>
-                  <th className="py-3 px-4">Author</th>
+                  <th className="py-3 px-4">Title</th>
+                  <th className="py-3 px-4">Creator</th>
+                  <th className="py-3 px-4">Dates</th>
                   <th className="py-3 px-4">Stops</th>
-                  <th className="py-3 px-4">Activities</th>
                   <th className="py-3 px-4">Budget</th>
                   <th className="py-3 px-4">Visibility</th>
-                  <th className="py-3 px-4 text-center">Actions</th>
+                  <th className="py-3 px-4 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-200">
-                {trips.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-800/40 transition">
-                    <td className="py-3 px-4 font-bold text-white">{t.title}</td>
-                    <td className="py-3 px-4 text-slate-300">{t.author_name}</td>
-                    <td className="py-3 px-4 text-indigo-400 font-bold">{t.stop_count}</td>
-                    <td className="py-3 px-4 text-purple-400 font-bold">{t.activity_count}</td>
-                    <td className="py-3 px-4 font-bold text-emerald-400">${t.total_budget}</td>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {filteredTrips.map((t) => (
+                  <tr key={t.id} className="hover:bg-slate-50 transition">
+                    <td className="py-3 px-4 font-semibold text-slate-900">{t.title}</td>
+                    <td className="py-3 px-4 text-slate-600">{t.author_name}</td>
+                    <td className="py-3 px-4 text-slate-500">{t.start_date} ➔ {t.end_date}</td>
+                    <td className="py-3 px-4 text-indigo-700 font-bold">{t.stop_count || 0}</td>
+                    <td className="py-3 px-4 text-emerald-700 font-bold">${t.total_budget}</td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-slate-800 text-slate-300">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        t.visibility === 'public' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                      }`}>
                         {t.visibility}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-center flex items-center justify-center gap-2">
+                    <td className="py-3 px-4 text-center">
                       <button
-                        onClick={() => onSelectTrip(t.id, 'view')}
-                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"
-                        title="View Itinerary"
+                        onClick={() => setDeleteTarget(t)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
                       >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setTripToDelete(t)}
-                        className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
-                        title="Admin Delete"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>
@@ -363,14 +347,69 @@ export default function AdminDashboardScreen({ onSelectTrip, onNavigate }) {
         </div>
       )}
 
-      {/* Delete Trip Confirm */}
+      {/* 3. User Directory Tab */}
+      {activeTab === 'users' && (
+        <div className="rounded-3xl white-card p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-slate-900">Registered Users</h3>
+            <input
+              type="text"
+              value={searchUser}
+              onChange={(e) => setSearchUser(e.target.value)}
+              placeholder="Search user..."
+              className="bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-600"
+            />
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-slate-100 text-slate-500 font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">Role</th>
+                  <th className="py-3 px-4">Trips Created</th>
+                  <th className="py-3 px-4">Joined Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {filteredUsers.map((u) => (
+                  <tr key={u.id} className="hover:bg-slate-50 transition">
+                    <td className="py-3 px-4 font-semibold text-slate-900 flex items-center gap-2">
+                      <img
+                        src={u.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${u.name}`}
+                        alt={u.name}
+                        className="w-7 h-7 rounded-lg object-cover ring-1 ring-slate-200"
+                      />
+                      <span>{u.name}</span>
+                    </td>
+                    <td className="py-3 px-4 text-slate-600">{u.email}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        u.role === 'admin' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        {u.role}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-bold text-indigo-700">{u.trip_count || 0}</td>
+                    <td className="py-3 px-4 text-slate-500">{new Date(u.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
       <ConfirmDialog
-        isOpen={!!tripToDelete}
-        onClose={() => setTripToDelete(null)}
-        onConfirm={handleDeleteTripConfirm}
-        title="Admin Moderate: Delete Trip"
-        message={`Are you sure you want to permanently delete "${tripToDelete?.title}" by ${tripToDelete?.author_name}?`}
-        confirmText="Delete as Admin"
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDeleteTripExecute}
+        title="Admin Trip Removal"
+        message={`Are you sure you want to remove trip "${deleteTarget?.title}" created by ${deleteTarget?.author_name}?`}
+        confirmText="Remove Trip"
+        isLoading={isDeleting}
       />
     </div>
   );

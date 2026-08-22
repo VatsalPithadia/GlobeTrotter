@@ -4,64 +4,53 @@ import { api } from '../api/client';
 import { useNotification } from '../context/NotificationContext';
 import {
   User,
-  Settings,
-  Heart,
-  Globe,
-  DollarSign,
   Mail,
-  Shield,
+  Coins,
+  Globe,
+  Heart,
   Download,
-  Trash2,
+  Check,
+  Save,
+  Compass,
   Sparkles,
   MapPin,
-  Plus,
-  ArrowRight,
-  CheckCircle2,
-  RefreshCw
+  Trash2,
+  Share2,
+  Calendar
 } from 'lucide-react';
 
 const AVATAR_PRESETS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80'
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80'
 ];
 
-export default function UserProfileScreen({ onOpenNewTripWithCity, onNavigate }) {
-  const { user, stats, updateProfile } = useAuth();
+export default function UserProfileScreen({ onNavigate, onOpenNewTripWithCity }) {
+  const { user, stats, refreshUser } = useAuth();
   const notify = useNotification();
 
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'wishlist' | 'preferences'
   const [name, setName] = useState(user?.name || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || '');
-  const [currency, setCurrency] = useState(user?.currency || 'USD');
-  const [language, setLanguage] = useState(user?.language || 'en');
+  const [avatar, setAvatar] = useState(user?.avatar_url || AVATAR_PRESETS[0]);
+  const [currency, setCurrency] = useState(user?.currency_preference || 'USD');
   const [saving, setSaving] = useState(false);
 
-  // Wishlist
   const [wishlist, setWishlist] = useState([]);
-  const [loadingWishlist, setLoadingWishlist] = useState(false);
+  const [loadingWishlist, setLoadingWishlist] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      setName(user.name || '');
-      setBio(user.bio || '');
-      setAvatarUrl(user.avatar_url || '');
-      setCurrency(user.currency || 'USD');
-      setLanguage(user.language || 'en');
-    }
     loadWishlist();
-  }, [user]);
+  }, []);
 
   const loadWishlist = async () => {
     setLoadingWishlist(true);
     try {
       const res = await api.getWishlist();
-      setWishlist(res.wishlist || []);
-    } catch (e) {
-      setWishlist([]);
+      setWishlist(res.saved || []);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoadingWishlist(false);
     }
@@ -71,14 +60,16 @@ export default function UserProfileScreen({ onOpenNewTripWithCity, onNavigate })
     e.preventDefault();
     setSaving(true);
     try {
-      await updateProfile({
-        name,
-        bio,
-        avatar_url: avatarUrl,
-        currency,
-        language
+      await api.updateProfile({
+        name: name.trim(),
+        bio: bio.trim(),
+        avatar_url: avatar,
+        currency_preference: currency
       });
-    } catch (e) {
+      await refreshUser();
+      notify.success('Profile preferences updated successfully');
+    } catch (err) {
+      notify.error('Failed to update profile');
     } finally {
       setSaving(false);
     }
@@ -87,9 +78,9 @@ export default function UserProfileScreen({ onOpenNewTripWithCity, onNavigate })
   const handleRemoveWishlist = async (cityId) => {
     try {
       await api.toggleWishlist(cityId);
-      notify.info('Destination removed from wishlist');
-      setWishlist((prev) => prev.filter((c) => c.id !== cityId));
-    } catch (e) {
+      notify.success('Destination removed from wishlist');
+      setWishlist((prev) => prev.filter((item) => item.id !== cityId));
+    } catch (err) {
       notify.error('Failed to update wishlist');
     }
   };
@@ -97,144 +88,81 @@ export default function UserProfileScreen({ onOpenNewTripWithCity, onNavigate })
   const handleExportData = async () => {
     try {
       const tripsRes = await api.getTrips();
-      const exportObject = {
-        user,
-        stats,
-        wishlist,
-        trips: tripsRes.trips || [],
-        exported_at: new Date().toISOString()
-      };
-
-      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObject, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute('href', dataStr);
-      downloadAnchor.setAttribute('download', `globetrotter-backup-${user?.id || 'traveler'}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-
-      notify.success('All travel data exported as JSON!');
-    } catch (e) {
-      notify.error('Failed to export data');
+      const exportBlob = new Blob(
+        [
+          JSON.stringify(
+            {
+              exported_at: new Date().toISOString(),
+              user: { name: user.name, email: user.email, currency: user.currency_preference },
+              trips: tripsRes.trips,
+              wishlist
+            },
+            null,
+            2
+          )
+        ],
+        { type: 'application/json' }
+      );
+      const url = URL.createObjectURL(exportBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `globetrotter-backup-${user.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+      a.click();
+      notify.success('Portfolio backup exported as JSON!');
+    } catch (err) {
+      notify.error('Export failed');
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-20 animate-fade-in">
-      {/* User Header Profile Card */}
-      <div className="rounded-3xl glass-panel p-8 border border-slate-700/70 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <div className="relative">
-            <img
-              src={avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`}
-              alt={name}
-              className="w-20 h-20 rounded-3xl object-cover ring-4 ring-indigo-500/30 shadow-2xl bg-slate-800"
-            />
-            {user?.role === 'admin' && (
-              <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] uppercase shadow">
-                Admin
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-1">
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">{name}</h1>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-indigo-400" />
-              {user?.email}
-            </p>
-            {bio && <p className="text-xs text-slate-300 max-w-md mt-1">{bio}</p>}
-          </div>
-        </div>
-
-        {/* Lifetime Travel Stats */}
-        <div className="grid grid-cols-3 gap-3 border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6 text-center">
-          <div className="p-3 bg-slate-900/60 rounded-2xl border border-slate-800">
-            <span className="text-[10px] uppercase font-bold text-slate-400">Trips</span>
-            <p className="text-xl font-black text-white">{stats?.total_trips || 0}</p>
-          </div>
-          <div className="p-3 bg-slate-900/60 rounded-2xl border border-slate-800">
-            <span className="text-[10px] uppercase font-bold text-slate-400">Cities</span>
-            <p className="text-xl font-black text-indigo-400">{stats?.total_cities || 0}</p>
-          </div>
-          <div className="p-3 bg-slate-900/60 rounded-2xl border border-slate-800">
-            <span className="text-[10px] uppercase font-bold text-slate-400">Wishlist</span>
-            <p className="text-xl font-black text-rose-400">{wishlist.length}</p>
-          </div>
-        </div>
+    <div className="space-y-8 pb-20 animate-fade-in">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Profile & Preferences
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          Manage your personal travel profile, regional currency settings, and saved dream destinations.
+        </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 w-fit">
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'profile' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <User className="w-4 h-4" />
-          <span>Profile & Bio</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('wishlist')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'wishlist' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Heart className="w-4 h-4 text-rose-400" />
-          <span>Saved Wishlist ({wishlist.length})</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('preferences')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-            activeTab === 'preferences' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Settings className="w-4 h-4 text-purple-400" />
-          <span>Preferences & Data</span>
-        </button>
-      </div>
-
-      {/* TAB 1: PROFILE EDIT */}
-      {activeTab === 'profile' && (
-        <form onSubmit={handleSaveProfile} className="rounded-3xl glass-panel p-8 border border-slate-800 space-y-6">
-          <div>
-            <h3 className="text-lg font-bold text-white">Personal Information</h3>
-            <p className="text-xs text-slate-400">Manage how you appear across GlobeTrotter itineraries.</p>
-          </div>
-
-          {/* Avatar Presets */}
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">
-              Choose Profile Avatar
-            </label>
-            <div className="flex flex-wrap gap-3 mb-3">
-              {AVATAR_PRESETS.map((p, i) => (
-                <img
-                  key={i}
-                  src={p}
-                  alt={`Preset ${i}`}
-                  onClick={() => setAvatarUrl(p)}
-                  className={`w-14 h-14 rounded-2xl object-cover cursor-pointer border-2 transition ${
-                    avatarUrl === p
-                      ? 'border-indigo-500 ring-2 ring-indigo-500/50 scale-105'
-                      : 'border-transparent opacity-60 hover:opacity-100'
-                  }`}
-                />
-              ))}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Profile Card & Settings Form */}
+        <div className="lg:col-span-6 space-y-6">
+          <form onSubmit={handleSaveProfile} className="rounded-3xl white-card p-6 space-y-5">
+            <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
+              <img
+                src={avatar}
+                alt={name}
+                className="w-16 h-16 rounded-2xl object-cover ring-2 ring-indigo-500/20 shrink-0"
+              />
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900">{name || 'Traveler'}</h3>
+                <p className="text-xs text-slate-500">{user?.email}</p>
+              </div>
             </div>
-            <input
-              type="url"
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder="Or paste custom image URL..."
-              className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-indigo-500"
-            />
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Choose Profile Avatar
+              </label>
+              <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
+                {AVATAR_PRESETS.map((p, idx) => (
+                  <img
+                    key={idx}
+                    src={p}
+                    alt="preset"
+                    onClick={() => setAvatar(p)}
+                    className={`w-11 h-11 rounded-xl object-cover cursor-pointer border-2 transition ${
+                      avatar === p ? 'border-indigo-600 ring-2 ring-indigo-200 scale-105' : 'border-transparent opacity-70 hover:opacity-100'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Full Name
               </label>
               <input
@@ -242,190 +170,153 @@ export default function UserProfileScreen({ onOpenNewTripWithCity, onNavigate })
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
-                Email Address (Read-only)
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Travel Bio & Motto
               </label>
-              <input
-                type="email"
-                disabled
-                value={user?.email || ''}
-                className="w-full bg-slate-900 border border-slate-800 text-slate-500 rounded-xl px-4 py-2.5 text-sm cursor-not-allowed"
+              <textarea
+                rows="3"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Passionate globe-trotter exploring historic European architecture and Asian food markets..."
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
-              Travel Bio & Motto
-            </label>
-            <textarea
-              rows="3"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell others about your travel style, favorite countries, photography passions..."
-              className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-500"
-            />
-          </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Default Currency
+                </label>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
+                >
+                  <option value="USD">USD ($) - US Dollar</option>
+                  <option value="EUR">EUR (€) - Euro</option>
+                  <option value="GBP">GBP (£) - British Pound</option>
+                  <option value="INR">INR (₹) - Indian Rupee</option>
+                  <option value="JPY">JPY (¥) - Japanese Yen</option>
+                </select>
+              </div>
 
-          <div className="flex justify-end pt-4 border-t border-slate-800">
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30 transition hover:scale-102"
-            >
-              {saving ? 'Saving...' : 'Save Profile Changes'}
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* TAB 2: SAVED WISHLIST */}
-      {activeTab === 'wishlist' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-white">Your Dream Destinations</h3>
-              <p className="text-xs text-slate-400">
-                Cities you've saved to explore in future itineraries.
-              </p>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Role Status
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={user?.role === 'admin' ? 'Administrator' : 'Verified Traveler'}
+                  className="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-xl px-3 py-2 text-xs cursor-not-allowed font-medium"
+                />
+              </div>
             </div>
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={handleExportData}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export JSON Backup</span>
+              </button>
+
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition"
+              >
+                <Save className="w-3.5 h-3.5" />
+                <span>{saving ? 'Saving...' : 'Save Changes'}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Right Column: Wishlist Destinations */}
+        <div className="lg:col-span-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Heart className="w-5 h-5 text-rose-600" />
+              <h3 className="text-base font-extrabold text-slate-900">
+                Saved Wishlist Destinations ({wishlist.length})
+              </h3>
+            </div>
+            <button
+              onClick={() => onNavigate('explore-cities')}
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-700"
+            >
+              + Browse More
+            </button>
           </div>
 
           {loadingWishlist ? (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-64 rounded-3xl bg-slate-800/40 animate-pulse border border-slate-800" />
-              ))}
-            </div>
+            <div className="h-60 rounded-3xl bg-slate-100 animate-pulse" />
           ) : wishlist.length === 0 ? (
-            <div className="p-12 rounded-3xl glass-card text-center space-y-3">
+            <div className="p-10 rounded-3xl white-card text-center space-y-3">
               <Heart className="w-8 h-8 text-rose-400 mx-auto" />
-              <h4 className="text-base font-bold text-white">Wishlist is Empty</h4>
-              <p className="text-xs text-slate-400">
-                Browse our curated destinations catalog and hit the heart icon to save your favorites!
-              </p>
+              <p className="text-xs text-slate-500">Your destination wishlist is empty.</p>
               <button
                 onClick={() => onNavigate('explore-cities')}
-                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl"
+                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-xs"
               >
-                Browse Cities
+                Explore Destinations
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wishlist.map((city) => (
+            <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+              {wishlist.map((w) => (
                 <div
-                  key={city.id}
-                  className="rounded-3xl glass-card overflow-hidden border border-slate-800 flex flex-col justify-between"
+                  key={w.id}
+                  className="rounded-2xl white-card p-3.5 flex items-center justify-between gap-4"
                 >
-                  <div className="relative h-44 w-full overflow-hidden bg-slate-800">
+                  <div className="flex items-center gap-3">
                     <img
-                      src={city.image_url}
-                      alt={city.name}
-                      className="w-full h-full object-cover"
+                      src={w.image_url}
+                      alt={w.name}
+                      className="w-14 h-14 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-
-                    <button
-                      onClick={() => handleRemoveWishlist(city.id)}
-                      className="absolute top-3 right-3 p-2 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-600/40"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <h4 className="text-base font-bold text-white">{city.name}</h4>
-                      <p className="text-xs text-slate-300">{city.country} • {city.continent}</p>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-xs font-bold text-slate-900">{w.name}</h4>
+                        <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                          {w.cost_index}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-slate-400" />
+                        {w.country} • ${w.avg_daily_cost}/day
+                      </p>
                     </div>
                   </div>
 
-                  <div className="p-4 space-y-3">
-                    <p className="text-xs text-slate-300 line-clamp-2">{city.description}</p>
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-800">
-                      <span className="text-xs font-bold text-emerald-400">${city.avg_daily_cost}/day</span>
-                      <button
-                        onClick={() => onOpenNewTripWithCity(city)}
-                        className="flex items-center gap-1 text-xs font-bold text-indigo-400 hover:text-indigo-300"
-                      >
-                        <span>Plan Trip</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onOpenNewTripWithCity(w)}
+                      className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl transition"
+                    >
+                      Plan Trip
+                    </button>
+                    <button
+                      onClick={() => handleRemoveWishlist(w.id)}
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      )}
-
-      {/* TAB 3: PREFERENCES & DATA */}
-      {activeTab === 'preferences' && (
-        <div className="rounded-3xl glass-panel p-8 border border-slate-800 space-y-8">
-          <div>
-            <h3 className="text-lg font-bold text-white">System Preferences & Data Portability</h3>
-            <p className="text-xs text-slate-400">Configure global currency, language, and export your personal travel records.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
-                Default Currency
-              </label>
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500"
-              >
-                <option value="USD">USD ($) - United States Dollar</option>
-                <option value="EUR">EUR (€) - Euro</option>
-                <option value="GBP">GBP (£) - British Pound</option>
-                <option value="INR">INR (₹) - Indian Rupee</option>
-                <option value="JPY">JPY (¥) - Japanese Yen</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase tracking-wider">
-                Language
-              </label>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500"
-              >
-                <option value="en">English (US)</option>
-                <option value="fr">Français (French)</option>
-                <option value="es">Español (Spanish)</option>
-                <option value="de">Deutsch (German)</option>
-                <option value="ja">日本語 (Japanese)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Export Data Button */}
-          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h4 className="text-sm font-bold text-white">Export Full Travel Portfolio</h4>
-              <p className="text-xs text-slate-400">
-                Download a clean JSON archive containing all your itineraries, scheduled activities, and logged expenses.
-              </p>
-            </div>
-            <button
-              onClick={handleExportData}
-              className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl border border-slate-700 transition"
-            >
-              <Download className="w-4 h-4 text-indigo-400" />
-              <span>Download JSON Backup</span>
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

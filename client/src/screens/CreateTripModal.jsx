@@ -104,14 +104,13 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
 
       const res = await api.createTrip(payload);
 
-      // Trigger celebratory confetti
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 70,
+        spread: 60,
         origin: { y: 0.6 }
       });
 
-      notify.success('🎉 Trip created successfully! Opening Itinerary Builder...');
+      notify.success('Trip created successfully! Opening Itinerary Builder...');
       onClose();
       if (onTripCreated) {
         onTripCreated(res.trip);
@@ -124,12 +123,12 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Plan a New Adventure" maxWidth="max-w-2xl">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose} title="Plan a New Travel Itinerary" maxWidth="max-w-2xl">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Title & Travel Style */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Trip Title *
             </label>
             <input
@@ -138,12 +137,12 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Summer in Southern Italy & Amalfi Coast"
-              className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder:text-slate-500 font-medium"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Travel Style & Vibe
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -155,13 +154,13 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
                     key={st.id}
                     type="button"
                     onClick={() => setTravelStyle(st.id)}
-                    className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition text-left ${
+                    className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition text-left ${
                       isSelected
-                        ? 'bg-indigo-600/30 border-indigo-500 text-white shadow-md shadow-indigo-600/20'
-                        : 'bg-slate-800/60 border-slate-700/80 text-slate-400 hover:text-white hover:bg-slate-800'
+                        ? 'bg-indigo-50 border-indigo-600 text-indigo-900 shadow-xs'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
                     <span>{st.label}</span>
                   </button>
                 );
@@ -170,46 +169,46 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
           </div>
         </div>
 
-        {/* Date Ranges & Duration Indicator */}
+        {/* Date Ranges */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Start Date *
             </label>
             <div className="relative">
-              <Calendar className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="date"
                 required
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               End Date *
             </label>
             <div className="relative">
-              <Calendar className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="date"
                 required
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/60 text-xs font-medium text-slate-300">
+        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-600">
           <span>
-            Total Duration: <strong className="text-indigo-400">{calculateDays()} Days</strong>
+            Total Duration: <strong className="text-indigo-700">{calculateDays()} Days</strong>
           </span>
-          <span className="text-slate-400">
+          <span className="text-slate-500">
             {startDate} ➔ {endDate}
           </span>
         </div>
@@ -217,11 +216,11 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
         {/* Target Budget & Currency */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
-              Estimated Total Budget
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Target Budget
             </label>
             <div className="relative">
-              <DollarSign className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <DollarSign className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="number"
                 min="0"
@@ -229,19 +228,19 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
                 placeholder="2000"
-                className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Currency
             </label>
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             >
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
@@ -252,12 +251,12 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
           </div>
         </div>
 
-        {/* Cover Photo Selection */}
+        {/* Cover Photo */}
         <div>
-          <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">
-            Choose Cover Photo
+          <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            Select Cover Image
           </label>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2.5">
             {COVER_PRESETS.map((preset, idx) => (
               <div
                 key={idx}
@@ -265,10 +264,10 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
                   setCoverImage(preset.url);
                   setCustomCoverUrl('');
                 }}
-                className={`relative h-16 rounded-xl overflow-hidden cursor-pointer border-2 transition ${
+                className={`relative h-14 rounded-xl overflow-hidden cursor-pointer border-2 transition ${
                   coverImage === preset.url && !customCoverUrl
-                    ? 'border-indigo-500 ring-2 ring-indigo-500/50 scale-102'
-                    : 'border-transparent opacity-60 hover:opacity-100'
+                    ? 'border-indigo-600 ring-2 ring-indigo-200 scale-102'
+                    : 'border-transparent opacity-70 hover:opacity-100'
                 }`}
               >
                 <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
@@ -277,45 +276,45 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
           </div>
 
           <div className="relative">
-            <ImageIcon className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <ImageIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="url"
               value={customCoverUrl}
               onChange={(e) => setCustomCoverUrl(e.target.value)}
               placeholder="Or paste custom image URL..."
-              className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             />
           </div>
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
-            Description & Notes (Optional)
+          <label className="block text-xs font-bold text-slate-700 mb-1">
+            Description & Notes
           </label>
           <textarea
             rows="2"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Key travel goals, must-see landmarks, packing notes..."
-            className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
           />
         </div>
 
         {/* Visibility */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/40 border border-slate-700/60">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
           <div>
-            <span className="text-xs font-bold text-white block">Community Visibility</span>
-            <span className="text-[11px] text-slate-400">
-              Allow others to view and copy this itinerary
+            <span className="text-xs font-bold text-slate-800 block">Community Visibility</span>
+            <span className="text-[11px] text-slate-500">
+              Allow others to view and clone this trip
             </span>
           </div>
-          <div className="flex bg-slate-800 p-1 rounded-lg border border-slate-700">
+          <div className="flex bg-slate-200/80 p-0.5 rounded-lg">
             <button
               type="button"
               onClick={() => setVisibility('public')}
               className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                visibility === 'public' ? 'bg-indigo-600 text-white' : 'text-slate-400'
+                visibility === 'public' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600'
               }`}
             >
               Public
@@ -324,7 +323,7 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
               type="button"
               onClick={() => setVisibility('private')}
               className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                visibility === 'private' ? 'bg-indigo-600 text-white' : 'text-slate-400'
+                visibility === 'private' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600'
               }`}
             >
               Private
@@ -333,21 +332,21 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
         </div>
 
         {/* Form Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition"
+            className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 rounded-xl shadow-lg shadow-indigo-600/30 transition hover:scale-102 active:scale-98"
+            className="flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition active:scale-98"
           >
             <span>{loading ? 'Creating...' : 'Save & Build Itinerary'}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </form>
