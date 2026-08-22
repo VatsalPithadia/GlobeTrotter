@@ -95,7 +95,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$$',
       popularity_score: 98,
-      image_url: 'https://images.unsplash.com/photo-1603258849062-817c1817c72f?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?jaipur,rajasthan,palace',
       description: 'The Pink City is famous for grand Rajput palaces, majestic Amber Fort, bustling bazaars, and rich royal heritage.',
       avg_daily_cost: 2500,
       lat: 26.9124,
@@ -109,7 +109,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$$$',
       popularity_score: 96,
-      image_url: 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?udaipur,lake,palace',
       description: 'The City of Lakes mesmerizes travelers with romantic marble palaces, serene Lake Pichola boat rides, and sunsets.',
       avg_daily_cost: 3200,
       lat: 24.5854,
@@ -123,7 +123,7 @@ function seedDatabase() {
       continent: 'West India',
       cost_index: '$$',
       popularity_score: 99,
-      image_url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?goa,beach,india',
       description: 'India’s beach paradise offers sun-kissed sands, Portuguese heritage villas, beach shacks, water sports, and vibrant nightlife.',
       avg_daily_cost: 2800,
       lat: 15.2993,
@@ -137,7 +137,7 @@ function seedDatabase() {
       continent: 'South India',
       cost_index: '$$',
       popularity_score: 94,
-      image_url: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?munnar,tea,hills',
       description: 'Idyllic hill station nestled in the Western Ghats surrounded by rolling tea plantations, mist-covered valleys, and waterfalls.',
       avg_daily_cost: 2200,
       lat: 10.0889,
@@ -151,7 +151,7 @@ function seedDatabase() {
       continent: 'South India',
       cost_index: '$$$',
       popularity_score: 95,
-      image_url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?kerala,backwaters,houseboat',
       description: 'The Venice of the East, celebrated for traditional thatched houseboat cruises through tranquil palm-fringed backwaters.',
       avg_daily_cost: 3500,
       lat: 9.4981,
@@ -165,7 +165,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$$',
       popularity_score: 97,
-      image_url: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?manali,himalaya,snow',
       description: 'Himalayan wonderland famous for snow-capped peaks, paragliding in Solang Valley, river rafting, and cozy riverside cafes.',
       avg_daily_cost: 2400,
       lat: 32.2432,
@@ -179,7 +179,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$$$',
       popularity_score: 96,
-      image_url: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?ladakh,pangong,mountains',
       description: 'High-altitude desert adventure with breathtaking turquoise Pangong Lake, ancient Buddhist monasteries, and high mountain passes.',
       avg_daily_cost: 3600,
       lat: 34.1526,
@@ -193,7 +193,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$',
       popularity_score: 93,
-      image_url: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?varanasi,ganga,ghats',
       description: 'One of the world’s oldest living cities, celebrated for spiritual ghats on the sacred river Ganga, evening Maha Aarti, and silk weaving.',
       avg_daily_cost: 1500,
       lat: 25.3176,
@@ -207,7 +207,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$',
       popularity_score: 95,
-      image_url: 'https://images.unsplash.com/photo-1600100397608-f010f4439c63?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?rishikesh,river,yoga',
       description: 'The Yoga Capital of the World along the pristine upper Ganga, featuring white-water rafting, cliff jumping, and serene ashrams.',
       avg_daily_cost: 1800,
       lat: 30.0869,
@@ -221,7 +221,7 @@ function seedDatabase() {
       continent: 'West India',
       cost_index: '$$$',
       popularity_score: 97,
-      image_url: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?mumbai,india,city',
       description: 'The City of Dreams boasting colonial heritage at Gateway of India, sunset walks along Marine Drive, and buzzing street food.',
       avg_daily_cost: 3500,
       lat: 18.922,
@@ -235,7 +235,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$',
       popularity_score: 94,
-      image_url: 'https://images.unsplash.com/photo-1588096344356-9a4f40d12e69?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?golden,temple,amritsar',
       description: 'Home to the magnificent Golden Temple (Harmandir Sahib), soulful Langar, Wagah Border beating retreat, and mouthwatering Punjabi cuisine.',
       avg_daily_cost: 1600,
       lat: 31.634,
@@ -249,7 +249,7 @@ function seedDatabase() {
       continent: 'East India',
       cost_index: '$$',
       popularity_score: 92,
-      image_url: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?darjeeling,tea,mountain',
       description: 'Queen of the Hills offering views of Mount Kanchenjunga, UNESCO heritage Himalayan Toy Train, and lush organic tea estates.',
       avg_daily_cost: 2100,
       lat: 27.041,
@@ -263,7 +263,7 @@ function seedDatabase() {
       continent: 'North India',
       cost_index: '$$',
       popularity_score: 98,
-      image_url: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?taj,mahal,agra',
       description: 'The monumental Mughal capital home to the majestic Taj Mahal, Agra Fort, and historic marble craftsmanship.',
       avg_daily_cost: 2200,
       lat: 27.1767,
@@ -277,7 +277,7 @@ function seedDatabase() {
       continent: 'Islands',
       cost_index: '$$$$',
       popularity_score: 95,
-      image_url: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+      image_url: 'https://source.unsplash.com/featured/1200x800/?andaman,beach,tropical',
       description: 'Exotic tropical haven with Radhanagar beach, vibrant coral reefs, scuba diving, bioluminescent night kayaking, and turquoise water.',
       avg_daily_cost: 4500,
       lat: 11.9761,
@@ -306,7 +306,7 @@ function seedDatabase() {
       duration_mins: 180,
       rating: 4.9,
       description: 'Explore the grand hilltop fort, royal courtyards, and dazzling mirror palace (Sheesh Mahal) with an expert historian.',
-      image_url: 'https://images.unsplash.com/photo-1603258849062-817c1817c72f?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?amber,fort,jaipur'
     },
     {
       id: 'cat-hawa-mahal',
@@ -317,7 +317,7 @@ function seedDatabase() {
       duration_mins: 120,
       rating: 4.8,
       description: 'Photograph the iconic 953-window Palace of Winds and stroll through Johari and Bapu bazaars for handicrafts.',
-      image_url: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?hawa,mahal,bazaar'
     },
     {
       id: 'cat-pichola-boat',
@@ -328,7 +328,7 @@ function seedDatabase() {
       duration_mins: 90,
       rating: 4.9,
       description: 'Scenic evening boat ride gliding past Jag Mandir Island and the illuminated City Palace as the sun sets over the Aravallis.',
-      image_url: 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?lake,pichola,boat'
     },
     {
       id: 'cat-goa-watersports',
@@ -339,7 +339,7 @@ function seedDatabase() {
       duration_mins: 150,
       rating: 4.7,
       description: 'Thrilling parasailing, jet skiing, bumper rides, and banana boat rides along the vibrant North Goa coast.',
-      image_url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?goa,water,sports'
     },
     {
       id: 'cat-munnar-tea',
@@ -350,7 +350,7 @@ function seedDatabase() {
       duration_mins: 240,
       rating: 4.9,
       description: 'Early morning 4x4 jeep safari and trek to the highest tea plantation in the world to witness an ethereal cloudbed sunrise.',
-      image_url: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?tea,estate,sunrise'
     },
     {
       id: 'cat-alleppey-houseboat',
@@ -361,7 +361,7 @@ function seedDatabase() {
       duration_mins: 360,
       rating: 4.9,
       description: 'Full-day cruise through serene backwaters with traditional Kerala sadhya lunch prepared freshly on board.',
-      image_url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?kerala,backwaters,boat'
     },
     {
       id: 'cat-solang-paragliding',
@@ -372,7 +372,7 @@ function seedDatabase() {
       duration_mins: 60,
       rating: 4.8,
       description: 'Fly high above the snow peaks and cedar forests of Solang Valley with a licensed pilot and HD GoPro recording.',
-      image_url: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?paragliding,himalaya,adventure'
     },
     {
       id: 'cat-pangong-camp',
@@ -383,7 +383,7 @@ function seedDatabase() {
       duration_mins: 720,
       rating: 4.9,
       description: 'Unforgettable overnight luxury camp beside the color-shifting turquoise Pangong Lake beneath Milky Way skies.',
-      image_url: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?pangong,lake,stars'
     },
     {
       id: 'cat-ganga-aarti',
@@ -394,7 +394,7 @@ function seedDatabase() {
       duration_mins: 90,
       rating: 4.9,
       description: 'Witness the divine grand brass lamp ritual from a private traditional wooden boat anchored on holy river Ganga.',
-      image_url: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?varanasi,ghat,aarti'
     },
     {
       id: 'cat-taj-sunrise',
@@ -405,7 +405,7 @@ function seedDatabase() {
       duration_mins: 150,
       rating: 5.0,
       description: 'Skip the crowds at dawn to experience the shimmering ivory marble monument of love bathed in golden morning light.',
-      image_url: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?taj,mahal,sunrise'
     },
     {
       id: 'cat-rishikesh-rafting',
@@ -416,7 +416,7 @@ function seedDatabase() {
       duration_mins: 180,
       rating: 4.9,
       description: 'Conquer famous rapids like Roller Coaster and Golf Course with safety gear and mandatory cliff jump stop.',
-      image_url: 'https://images.unsplash.com/photo-1600100397608-f010f4439c63?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?rafting,river,adventure'
     },
     {
       id: 'cat-golden-temple',
@@ -427,7 +427,7 @@ function seedDatabase() {
       duration_mins: 150,
       rating: 5.0,
       description: 'Experience the serene sarovar, gold sanctum, and volunteer at the world’s largest community kitchen serving 100,000 daily meals.',
-      image_url: 'https://images.unsplash.com/photo-1588096344356-9a4f40d12e69?auto=format&fit=crop&w=600&q=80'
+      image_url: 'https://source.unsplash.com/featured/600x400/?golden,temple,sikh'
     }
   ];
 
@@ -465,7 +465,7 @@ function seedDatabase() {
     description: 'A 7-day royal expedition through the grand palaces of Jaipur and the romantic lakes of Udaipur.',
     start_date: '2026-10-10',
     end_date: '2026-10-17',
-    cover_image: 'https://images.unsplash.com/photo-1603258849062-817c1817c72f?auto=format&fit=crop&w=1200&q=80',
+    cover_image: 'https://source.unsplash.com/featured/1200x800/?rajasthan,palace,heritage',
     total_budget: 45000,
     currency: 'INR',
     status: 'upcoming',
@@ -585,7 +585,7 @@ function seedDatabase() {
     description: 'Unwind amidst the misty tea plantations of Munnar and traditional houseboat backwaters in Alleppey.',
     start_date: '2026-11-05',
     end_date: '2026-11-12',
-    cover_image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80',
+    cover_image: 'https://source.unsplash.com/featured/1200x800/?kerala,backwaters,green',
     total_budget: 38000,
     currency: 'INR',
     status: 'upcoming',
@@ -640,7 +640,7 @@ function seedDatabase() {
     scheduled_date: '2026-11-06',
     scheduled_time: '05:00',
     location_name: 'Kolukkumalai, Munnar',
-    image_url: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=600&q=80',
+    image_url: 'https://source.unsplash.com/featured/600x400/?tea,plantation,morning',
     order_index: 1
   });
 
@@ -656,7 +656,7 @@ function seedDatabase() {
     scheduled_date: '2026-11-09',
     scheduled_time: '11:00',
     location_name: 'Punnamada Jetty, Alleppey',
-    image_url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=600&q=80',
+    image_url: 'https://source.unsplash.com/featured/600x400/?houseboat,kerala,water',
     order_index: 1
   });
 
@@ -669,7 +669,7 @@ function seedDatabase() {
     description: 'Sun, sand, water sports, and Portuguese heritage villas in North & South Goa.',
     start_date: '2026-12-01',
     end_date: '2026-12-06',
-    cover_image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
+    cover_image: 'https://source.unsplash.com/featured/1200x800/?goa,beach,sunset',
     total_budget: 30000,
     currency: 'INR',
     status: 'upcoming',
@@ -707,7 +707,7 @@ function seedDatabase() {
     scheduled_date: '2026-12-02',
     scheduled_time: '10:00',
     location_name: 'Calangute Beach, Goa',
-    image_url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80',
+    image_url: 'https://source.unsplash.com/featured/600x400/?beach,watersports,india',
     order_index: 1
   });
 
