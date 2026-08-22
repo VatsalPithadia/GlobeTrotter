@@ -229,6 +229,7 @@ export default function MyTripsScreen({ onSelectTrip, onOpenNewTrip, onNavigate 
                   src={trip.cover_image}
                   alt={trip.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
@@ -386,6 +387,7 @@ export default function MyTripsScreen({ onSelectTrip, onOpenNewTrip, onNavigate 
                   src={trip.cover_image}
                   alt={trip.title}
                   className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://picsum.photos/seed/trip/64/64'; }}
                 />
                 <div>
                   <div className="flex items-center gap-2">

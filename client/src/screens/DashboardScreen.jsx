@@ -175,6 +175,7 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
                     src={trip.cover_image}
                     alt={trip.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
@@ -271,6 +272,7 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
                   src={city.image_url}
                   alt={city.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
@@ -358,9 +360,10 @@ export default function DashboardScreen({ onNavigate, onSelectTrip, onOpenNewTri
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={commTrip.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'}
+                  src={commTrip.author_avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${commTrip.author_name}`}
                   alt={commTrip.author_name}
                   className="w-10 h-10 rounded-full object-cover ring-1 ring-slate-200"
+                  onError={(e) => { e.target.onerror = null; e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${commTrip.author_name}`; }}
                 />
                 <div>
                   <h4 className="text-xs font-bold text-slate-900">{commTrip.author_name}</h4>

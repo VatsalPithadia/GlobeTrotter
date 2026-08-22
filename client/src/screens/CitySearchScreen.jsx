@@ -228,6 +228,7 @@ export default function CitySearchScreen({ onQuickAddCity, onOpenNewTripWithCity
                   src={city.image_url}
                   alt={city.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
@@ -302,6 +303,7 @@ export default function CitySearchScreen({ onQuickAddCity, onOpenNewTripWithCity
                 src={detailCity.image_url}
                 alt={detailCity.name}
                 className="w-full h-full object-cover"
+                onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
@@ -338,6 +340,7 @@ export default function CitySearchScreen({ onQuickAddCity, onOpenNewTripWithCity
                         src={act.image_url}
                         alt={act.name}
                         className="w-11 h-11 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://picsum.photos/seed/act/88/88'; }}
                       />
                       <div className="truncate">
                         <h5 className="text-xs font-bold text-slate-900 truncate">{act.name}</h5>
