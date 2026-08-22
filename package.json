@@ -1,0 +1,14 @@
+{
+  "name": "globetrotter",
+  "version": "1.0.0",
+  "description": "GlobeTrotter - Empowering Personalized Travel Planning (Odoo Hackathon)",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "seed": "cd server && npm run seed",
+    "start": "node server/src/index.js"
+  },
+  "keywords": ["travel-planning", "itinerary-builder", "odoo-hackathon", "globetrotter"],
+  "author": "Vatsal Pithadia",
+  "license": "MIT"
+}
