@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
-export default function BudgetGauge({ spent = 0, budget = 0, currency = '$' }) {
+export default function BudgetGauge({ spent = 0, budget = 0, currency = '₹' }) {
   const numBudget = Number(budget) || 0;
   const numSpent = Number(spent) || 0;
   const percentage = numBudget > 0 ? Math.min(Math.round((numSpent / numBudget) * 100), 100) : 0;
@@ -15,13 +15,13 @@ export default function BudgetGauge({ spent = 0, budget = 0, currency = '$' }) {
   };
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex items-center justify-between text-xs">
         <span className="text-slate-500">
-          Spent: <strong className="text-slate-900 font-semibold">{currency}{numSpent.toLocaleString()}</strong>
+          Spent: <strong className="text-slate-900 font-semibold">{currency}{numSpent.toLocaleString('en-IN')}</strong>
         </span>
         <span className="text-slate-500">
-          Budget: <strong className="text-slate-900 font-semibold">{numBudget > 0 ? `${currency}${numBudget.toLocaleString()}` : 'Not set'}</strong>
+          Budget: <strong className="text-slate-900 font-semibold">{numBudget > 0 ? `${currency}${numBudget.toLocaleString('en-IN')}` : 'Not set'}</strong>
         </span>
       </div>
 
@@ -37,12 +37,12 @@ export default function BudgetGauge({ spent = 0, budget = 0, currency = '$' }) {
           {isOver ? (
             <span className="flex items-center gap-1 text-rose-600 font-medium">
               <AlertCircle className="w-3 h-3 shrink-0" />
-              Over by {currency}{overAmount.toLocaleString()}
+              Over by {currency}{overAmount.toLocaleString('en-IN')}
             </span>
           ) : (
             <span className="flex items-center gap-1 text-emerald-600 font-medium">
               <CheckCircle2 className="w-3 h-3 shrink-0" />
-              {currency}{(numBudget - numSpent).toLocaleString()} remaining
+              {currency}{(numBudget - numSpent).toLocaleString('en-IN')} remaining
             </span>
           )}
           <span className="text-slate-400 font-medium">{percentage}% used</span>

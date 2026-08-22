@@ -138,7 +138,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
               </span>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-4 h-4 text-emerald-300" />
-                Budget: ${trip.total_budget}
+                Budget: ₹{Number(trip.total_budget || 0).toLocaleString('en-IN')}
               </span>
             </div>
           </div>
@@ -242,7 +242,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
                                 {act.category}
                               </span>
                               <span className="text-xs font-bold text-emerald-700">
-                                {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
+                                {Number(act.cost) > 0 ? `₹${Number(act.cost).toLocaleString('en-IN')}` : 'Free'}
                               </span>
                             </div>
                             <h4 className="text-sm font-bold text-slate-900 mt-1">{act.title}</h4>
@@ -304,7 +304,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
                   {stop.lodging_name && (
                     <div className="p-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2 text-xs text-purple-800">
                       <Hotel className="w-4 h-4 shrink-0 text-purple-600" />
-                      <span>{stop.lodging_name} (${stop.lodging_cost})</span>
+                      <span>{stop.lodging_name} (₹{Number(stop.lodging_cost).toLocaleString('en-IN')})</span>
                     </div>
                   )}
                 </div>
@@ -320,7 +320,7 @@ export default function ItineraryViewScreen({ tripId, onNavigate, onSelectTrip }
                           {act.category}
                         </span>
                         <span className="text-xs font-bold text-emerald-700">
-                          {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
+                          {Number(act.cost) > 0 ? `₹${Number(act.cost).toLocaleString('en-IN')}` : 'Free'}
                         </span>
                       </div>
                       <h4 className="text-xs font-bold text-slate-900">{act.title}</h4>

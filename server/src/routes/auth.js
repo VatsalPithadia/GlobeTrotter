@@ -94,9 +94,9 @@ router.post('/login', (req, res) => {
 router.post('/demo-login', (req, res) => {
   try {
     const { role = 'user' } = req.body;
-    let email = 'alex@globetrotter.io';
+    let email = 'aarav@globetrotter.in';
     if (role === 'admin') {
-      email = 'admin@globetrotter.io';
+      email = 'admin@globetrotter.in';
     }
 
     const user = db.prepare('SELECT id, name, email, avatar_url, bio, currency, role, language, created_at FROM users WHERE email = ?').get(email);

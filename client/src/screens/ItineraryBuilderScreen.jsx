@@ -478,8 +478,8 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
                               {stop.notes && <p className="text-slate-500">{stop.notes}</p>}
                             </div>
                             {Number(stop.lodging_cost) > 0 && (
-                              <span className="font-bold text-emerald-700 px-2.5 py-1 bg-emerald-50 rounded-xl border border-emerald-200 whitespace-nowrap self-start sm:self-auto">
-                                ${stop.lodging_cost} Lodging
+                              <span className="font-bold text-emerald-700 px-3 py-1 bg-emerald-50 rounded-xl border border-emerald-200 whitespace-nowrap self-start sm:self-auto">
+                                ₹{Number(stop.lodging_cost).toLocaleString('en-IN')} Stay
                               </span>
                             )}
                           </div>
@@ -554,7 +554,7 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
 
                                   <div className="flex items-center gap-3">
                                     <span className="text-xs font-bold text-emerald-700 whitespace-nowrap">
-                                      {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
+                                      {Number(act.cost) > 0 ? `₹${Number(act.cost).toLocaleString('en-IN')}` : 'Free'}
                                     </span>
 
                                     <div className="flex items-center gap-1">
@@ -625,21 +625,21 @@ export default function ItineraryBuilderScreen({ tripId, onNavigate, onSelectTri
             <BudgetGauge
               spent={metrics?.totalSpent || 0}
               budget={trip.total_budget || 0}
-              currency={trip.currency === 'EUR' ? '€' : trip.currency === 'GBP' ? '£' : '$'}
+              currency={trip.currency === 'USD' ? '$' : '₹'}
             />
 
             <div className="space-y-1.5 pt-3 border-t border-slate-100 text-xs">
               <div className="flex items-center justify-between text-slate-600">
-                <span>🏨 Lodging Total:</span>
-                <span className="font-bold text-slate-900">${metrics?.lodgingTotal || 0}</span>
+                <span>🏨 Stay Total:</span>
+                <span className="font-bold text-slate-900">₹{Number(metrics?.lodgingTotal || 0).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex items-center justify-between text-slate-600">
                 <span>🎟️ Activities Total:</span>
-                <span className="font-bold text-slate-900">${metrics?.activitiesTotal || 0}</span>
+                <span className="font-bold text-slate-900">₹{Number(metrics?.activitiesTotal || 0).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex items-center justify-between text-slate-600">
                 <span>✈️ Direct Logged Expenses:</span>
-                <span className="font-bold text-slate-900">${metrics?.expensesTotal || 0}</span>
+                <span className="font-bold text-slate-900">₹{Number(metrics?.expensesTotal || 0).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>

@@ -292,7 +292,7 @@ export default function UserProfileScreen({ onNavigate, onOpenNewTripWithCity })
                       </div>
                       <p className="text-[11px] text-slate-500 flex items-center gap-1">
                         <MapPin className="w-3 h-3 text-slate-400" />
-                        {w.country} • ${w.avg_daily_cost}/day
+                        {w.country} • ₹{Number(w.avg_daily_cost).toLocaleString('en-IN')}/day
                       </p>
                     </div>
                   </div>

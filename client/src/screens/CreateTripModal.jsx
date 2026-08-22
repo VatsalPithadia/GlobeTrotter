@@ -9,7 +9,6 @@ import {
   Image as ImageIcon,
   Compass,
   Sparkles,
-  Plane,
   Users,
   Heart,
   User,
@@ -19,20 +18,20 @@ import {
 } from 'lucide-react';
 
 const COVER_PRESETS = [
-  { label: 'Paris & Europe', url: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Kyoto & Japan', url: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Rome Heritage', url: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Tropical Bali', url: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'New York Skyline', url: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1200&q=80' },
-  { label: 'Taj Mahal Sunset', url: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80' }
+  { label: 'Jaipur Fort', url: 'https://images.unsplash.com/photo-1603258849062-817c1817c72f?auto=format&fit=crop&w=1200&q=80' },
+  { label: 'Udaipur Lakes', url: 'https://images.unsplash.com/photo-1615836245337-f5b9b2303f10?auto=format&fit=crop&w=1200&q=80' },
+  { label: 'Goa Beaches', url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80' },
+  { label: 'Kerala Backwaters', url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80' },
+  { label: 'Manali Mountains', url: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80' },
+  { label: 'Taj Mahal Sunrise', url: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80' }
 ];
 
 const STYLES = [
-  { id: 'Solo', label: 'Solo Traveler', icon: User },
-  { id: 'Couple', label: 'Couple Getaway', icon: Heart },
   { id: 'Family', label: 'Family Vacation', icon: Users },
+  { id: 'Couple', label: 'Couple Getaway', icon: Heart },
   { id: 'Friends', label: 'Friends Group', icon: Users },
-  { id: 'Luxury', label: 'Luxury & Comfort', icon: Crown },
+  { id: 'Solo', label: 'Solo Traveler', icon: User },
+  { id: 'Luxury', label: 'Heritage Luxury', icon: Crown },
   { id: 'Backpacker', label: 'Backpacker Budget', icon: Backpack }
 ];
 
@@ -40,14 +39,14 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
   const notify = useNotification();
 
   const [title, setTitle] = useState(initialCity ? `Journey to ${initialCity.name}` : '');
-  const [description, setDescription] = useState(initialCity ? `Exploring the best highlights, culture, and cuisine of ${initialCity.name}, ${initialCity.country}.` : '');
+  const [description, setDescription] = useState(initialCity ? `Exploring the best palaces, cuisine, and culture of ${initialCity.name}.` : '');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   );
-  const [budget, setBudget] = useState('2000');
-  const [currency, setCurrency] = useState('USD');
-  const [travelStyle, setTravelStyle] = useState('Couple');
+  const [budget, setBudget] = useState('30000');
+  const [currency, setCurrency] = useState('INR');
+  const [travelStyle, setTravelStyle] = useState('Family');
   const [visibility, setVisibility] = useState('public');
   const [coverImage, setCoverImage] = useState(
     initialCity?.image_url || COVER_PRESETS[0].url
@@ -105,12 +104,12 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
       const res = await api.createTrip(payload);
 
       confetti({
-        particleCount: 70,
+        particleCount: 60,
         spread: 60,
         origin: { y: 0.6 }
       });
 
-      notify.success('Trip created successfully! Opening Itinerary Builder...');
+      notify.success('Trip created successfully!');
       onClose();
       if (onTripCreated) {
         onTripCreated(res.trip);
@@ -124,52 +123,51 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Plan a New Travel Itinerary" maxWidth="max-w-2xl">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Title & Travel Style */}
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Trip Title *
-            </label>
-            <input
-              type="text"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Summer in Southern Italy & Amalfi Coast"
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium"
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Title */}
+        <div>
+          <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            Trip Title *
+          </label>
+          <input
+            type="text"
+            required
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Royal Rajasthan Tour or Kerala Backwaters Escape"
+            className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium"
+          />
+        </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Travel Style & Vibe
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {STYLES.map((st) => {
-                const Icon = st.icon;
-                const isSelected = travelStyle === st.id;
-                return (
-                  <button
-                    key={st.id}
-                    type="button"
-                    onClick={() => setTravelStyle(st.id)}
-                    className={`flex items-center gap-2 p-2 rounded-xl border text-xs font-bold transition text-left ${
-                      isSelected
-                        ? 'bg-indigo-50 border-indigo-600 text-indigo-900 shadow-xs'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
-                    <span>{st.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+        {/* Travel Style */}
+        <div>
+          <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            Travel Style
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {STYLES.map((st) => {
+              const Icon = st.icon;
+              const isSelected = travelStyle === st.id;
+              return (
+                <button
+                  key={st.id}
+                  type="button"
+                  onClick={() => setTravelStyle(st.id)}
+                  className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition text-left ${
+                    isSelected
+                      ? 'bg-indigo-50 border-indigo-600 text-indigo-900 shadow-xs'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
+                  <span>{st.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Date Ranges */}
+        {/* Dates */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
@@ -204,31 +202,31 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-600">
+        <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-600">
           <span>
-            Total Duration: <strong className="text-indigo-700">{calculateDays()} Days</strong>
+            Total Days: <strong className="text-indigo-700">{calculateDays()} Days</strong>
           </span>
           <span className="text-slate-500">
             {startDate} ➔ {endDate}
           </span>
         </div>
 
-        {/* Target Budget & Currency */}
+        {/* Budget & Currency */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2">
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Target Budget
+              Target Budget (₹)
             </label>
             <div className="relative">
-              <DollarSign className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <span className="text-xs font-bold text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2">₹</span>
               <input
                 type="number"
                 min="0"
-                step="50"
+                step="500"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                placeholder="2000"
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
+                placeholder="30000"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-8 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium"
               />
             </div>
           </div>
@@ -240,21 +238,19 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium"
             >
+              <option value="INR">INR (₹)</option>
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-              <option value="INR">INR (₹)</option>
-              <option value="JPY">JPY (¥)</option>
             </select>
           </div>
         </div>
 
-        {/* Cover Photo */}
+        {/* Cover Photo Selection */}
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1.5">
-            Select Cover Image
+            Select Cover Destination
           </label>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2.5">
             {COVER_PRESETS.map((preset, idx) => (
@@ -274,61 +270,20 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
               </div>
             ))}
           </div>
-
-          <div className="relative">
-            <ImageIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="url"
-              value={customCoverUrl}
-              onChange={(e) => setCustomCoverUrl(e.target.value)}
-              placeholder="Or paste custom image URL..."
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
-            />
-          </div>
         </div>
 
         {/* Description */}
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1">
-            Description & Notes
+            Notes / Overview
           </label>
           <textarea
             rows="2"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Key travel goals, must-see landmarks, packing notes..."
+            placeholder="Key highlights, packing notes, monument references..."
             className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
           />
-        </div>
-
-        {/* Visibility */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-          <div>
-            <span className="text-xs font-bold text-slate-800 block">Community Visibility</span>
-            <span className="text-[11px] text-slate-500">
-              Allow others to view and clone this trip
-            </span>
-          </div>
-          <div className="flex bg-slate-200/80 p-0.5 rounded-lg">
-            <button
-              type="button"
-              onClick={() => setVisibility('public')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                visibility === 'public' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600'
-              }`}
-            >
-              Public
-            </button>
-            <button
-              type="button"
-              onClick={() => setVisibility('private')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                visibility === 'private' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600'
-              }`}
-            >
-              Private
-            </button>
-          </div>
         </div>
 
         {/* Form Actions */}
@@ -343,9 +298,9 @@ export default function CreateTripModal({ isOpen, onClose, onTripCreated, initia
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition active:scale-98"
+            className="flex items-center gap-1.5 px-6 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition active:scale-98"
           >
-            <span>{loading ? 'Creating...' : 'Save & Build Itinerary'}</span>
+            <span>{loading ? 'Saving...' : 'Create & Build Itinerary'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

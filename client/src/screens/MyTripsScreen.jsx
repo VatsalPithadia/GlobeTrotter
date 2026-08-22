@@ -351,7 +351,7 @@ export default function MyTripsScreen({ onSelectTrip, onOpenNewTrip, onNavigate 
                 <BudgetGauge
                   spent={trip.total_expenses || 0}
                   budget={trip.total_budget || 0}
-                  currency={trip.currency === 'EUR' ? '€' : trip.currency === 'GBP' ? '£' : trip.currency === 'INR' ? '₹' : '$'}
+                  currency={trip.currency === 'USD' ? '$' : '₹'}
                 />
 
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">

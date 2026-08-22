@@ -226,7 +226,7 @@ export default function TripTimelineScreen({ tripId, onSelectTrip }) {
 
                     <div className="text-right shrink-0">
                       <span className="text-sm font-extrabold text-emerald-700">
-                        {Number(act.cost) > 0 ? `$${act.cost}` : 'Free'}
+                        {Number(act.cost) > 0 ? `₹${Number(act.cost).toLocaleString('en-IN')}` : 'Free'}
                       </span>
                     </div>
                   </div>

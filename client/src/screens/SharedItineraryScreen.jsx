@@ -170,7 +170,7 @@ export default function SharedItineraryScreen({ shareCode, onSelectTrip, onNavig
               </span>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-4 h-4 text-emerald-300" />
-                Budget: ${trip.total_budget}
+                Budget: ₹{Number(trip.total_budget || 0).toLocaleString('en-IN')}
               </span>
             </div>
           </div>

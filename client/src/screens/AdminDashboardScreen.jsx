@@ -63,7 +63,8 @@ export default function AdminDashboardScreen({ onNavigate }) {
         api.getAdminUsers(),
         api.getAdminTrips()
       ]);
-      setAnalytics(statsRes.stats);
+      // statsRes shape: { counts, continentDistribution, topCities, activityCategoryBreakdown, recentUsers, recentTrips }
+      setAnalytics(statsRes);
       setUsersList(uRes.users || []);
       setTripsList(tRes.trips || []);
     } catch (err) {
@@ -105,7 +106,7 @@ export default function AdminDashboardScreen({ onNavigate }) {
         <Shield className="w-12 h-12 text-amber-500 mx-auto" />
         <h2 className="text-xl font-bold text-slate-900">Administrator Access Required</h2>
         <p className="text-xs text-slate-500 max-w-md mx-auto">
-          Please sign in with the Admin Demo account (<code className="text-indigo-600 font-bold">admin@globetrotter.io</code>) to view the analytics dashboard.
+          Please sign in with the Admin Demo account (<code className="text-indigo-600 font-bold">admin@globetrotter.in</code>) to view the analytics dashboard.
         </p>
       </div>
     );
@@ -120,12 +121,16 @@ export default function AdminDashboardScreen({ onNavigate }) {
     );
   }
 
+  const topCities = analytics?.topCities || [];
+  const continentDist = analytics?.continentDistribution || [];
+  const counts = analytics?.counts || {};
+
   const topCitiesChart = {
-    labels: analytics.topCities.map((c) => c.name),
+    labels: topCities.map((c) => c.city_name),
     datasets: [
       {
         label: 'Times Scheduled in Trips',
-        data: analytics.topCities.map((c) => c.planned_count),
+        data: topCities.map((c) => c.planned_count),
         backgroundColor: '#4f46e5',
         borderRadius: 8
       }
@@ -133,10 +138,10 @@ export default function AdminDashboardScreen({ onNavigate }) {
   };
 
   const continentDoughnut = {
-    labels: analytics.continentDistribution.map((c) => c.continent),
+    labels: continentDist.map((c) => c.continent),
     datasets: [
       {
-        data: analytics.continentDistribution.map((c) => c.count),
+        data: continentDist.map((c) => c.stop_count),
         backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
         borderWidth: 2,
         borderColor: '#ffffff'
@@ -194,24 +199,24 @@ export default function AdminDashboardScreen({ onNavigate }) {
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Registered Users</span>
-          <p className="text-2xl font-black text-slate-900 mt-1">{analytics.totalUsers}</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">{counts.total_users || 0}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Trips</span>
-          <p className="text-2xl font-black text-indigo-700 mt-1">{analytics.totalTrips}</p>
+          <p className="text-2xl font-black text-indigo-700 mt-1">{counts.total_trips || 0}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Destination Stops</span>
-          <p className="text-2xl font-black text-purple-700 mt-1">{analytics.totalStops}</p>
+          <p className="text-2xl font-black text-purple-700 mt-1">{counts.total_stops || 0}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Activities Scheduled</span>
-          <p className="text-2xl font-black text-cyan-700 mt-1">{analytics.totalActivities}</p>
+          <p className="text-2xl font-black text-cyan-700 mt-1">{counts.total_activities || 0}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Budget Volume</span>
           <p className="text-2xl font-black text-emerald-700 mt-1">
-            ${Number(analytics.totalBudgetVolume || 0).toLocaleString()}
+            ₹{Number(counts.total_budget_volume || 0).toLocaleString('en-IN')}
           </p>
         </div>
       </div>
@@ -323,7 +328,7 @@ export default function AdminDashboardScreen({ onNavigate }) {
                     <td className="py-3 px-4 text-slate-600">{t.author_name}</td>
                     <td className="py-3 px-4 text-slate-500">{t.start_date} ➔ {t.end_date}</td>
                     <td className="py-3 px-4 text-indigo-700 font-bold">{t.stop_count || 0}</td>
-                    <td className="py-3 px-4 text-emerald-700 font-bold">${t.total_budget}</td>
+                    <td className="py-3 px-4 text-emerald-700 font-bold">₹{Number(t.total_budget).toLocaleString('en-IN')}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                         t.visibility === 'public' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
@@ -391,7 +396,7 @@ export default function AdminDashboardScreen({ onNavigate }) {
                         {u.role}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-bold text-indigo-700">{u.trip_count || 0}</td>
+                    <td className="py-3 px-4 font-bold text-indigo-700">{u.trips_count || 0}</td>
                     <td className="py-3 px-4 text-slate-500">{new Date(u.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}

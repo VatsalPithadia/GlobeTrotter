@@ -145,7 +145,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
     labels: dailySpending.map((d) => d.date),
     datasets: [
       {
-        label: 'Daily Expenditure ($)',
+        label: 'Daily Expenditure (₹)',
         data: dailySpending.map((d) => d.daily_total),
         backgroundColor: '#4f46e5',
         borderRadius: 6
@@ -154,7 +154,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
   };
 
   return (
-    <div className="space-y-8 pb-20 animate-fade-in">
+    <div className="space-y-8 pb-20 animate-fade-in max-w-7xl mx-auto">
       {/* Header Toolbar */}
       <div className="rounded-3xl white-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -166,7 +166,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
             <span>Back to Builder</span>
           </button>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Financial Dashboard: {trip.title}
+            Financial Analytics: {trip.title}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real-time categorical breakdown, daily expenditure monitoring, and expense logs.
@@ -175,7 +175,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
 
         <button
           onClick={() => setIsAddExpenseOpen(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition self-start md:self-auto"
+          className="flex items-center gap-1.5 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition self-start md:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add Custom Expense</span>
@@ -188,7 +188,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
             <div>
-              <p className="text-sm font-bold">Trip is currently over budget by ${overBudgetAmount.toLocaleString()}!</p>
+              <p className="text-sm font-bold">Trip is currently over budget by ₹{Number(overBudgetAmount).toLocaleString('en-IN')}!</p>
               <p className="text-xs text-rose-600/80">
                 Consider optimizing stay selections or activity scheduling in the Itinerary Builder.
               </p>
@@ -201,21 +201,21 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Planned Budget</span>
-          <p className="text-2xl font-black text-slate-900 mt-1">${budget.toLocaleString()}</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">₹{Number(budget).toLocaleString('en-IN')}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Spent</span>
           <p className={`text-2xl font-black mt-1 ${isOverBudget ? 'text-rose-600' : 'text-emerald-700'}`}>
-            ${totalSpent.toLocaleString()}
+            ₹{Number(totalSpent).toLocaleString('en-IN')}
           </p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Remaining</span>
-          <p className="text-2xl font-black text-indigo-600 mt-1">${remaining.toLocaleString()}</p>
+          <p className="text-2xl font-black text-indigo-600 mt-1">₹{Number(remaining).toLocaleString('en-IN')}</p>
         </div>
         <div className="p-5 rounded-2xl white-card">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Average / Day</span>
-          <p className="text-2xl font-black text-purple-700 mt-1">${avgCostPerDay}/day</p>
+          <p className="text-2xl font-black text-purple-700 mt-1">₹{Number(avgCostPerDay).toLocaleString('en-IN')}/day</p>
         </div>
       </div>
 
@@ -248,20 +248,20 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
           {/* Breakdown chips */}
           <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 text-xs">
             <div className="p-2 rounded-xl bg-purple-50 border border-purple-100 flex justify-between">
-              <span className="text-purple-800 font-semibold">🏨 Lodging:</span>
-              <span className="font-bold text-slate-900">${categoryTotals.lodging}</span>
+              <span className="text-purple-800 font-semibold">🏨 Stay:</span>
+              <span className="font-bold text-slate-900">₹{Number(categoryTotals.lodging || 0).toLocaleString('en-IN')}</span>
             </div>
             <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-100 flex justify-between">
               <span className="text-indigo-800 font-semibold">🎟️ Activities:</span>
-              <span className="font-bold text-slate-900">${categoryTotals.activity}</span>
+              <span className="font-bold text-slate-900">₹{Number(categoryTotals.activity || 0).toLocaleString('en-IN')}</span>
             </div>
             <div className="p-2 rounded-xl bg-cyan-50 border border-cyan-100 flex justify-between">
-              <span className="text-cyan-800 font-semibold">✈️ Transport:</span>
-              <span className="font-bold text-slate-900">${categoryTotals.transport}</span>
+              <span className="text-cyan-800 font-semibold">✈️ Transit:</span>
+              <span className="font-bold text-slate-900">₹{Number(categoryTotals.transport || 0).toLocaleString('en-IN')}</span>
             </div>
             <div className="p-2 rounded-xl bg-amber-50 border border-amber-100 flex justify-between">
               <span className="text-amber-800 font-semibold">🍽️ Food:</span>
-              <span className="font-bold text-slate-900">${categoryTotals.food}</span>
+              <span className="font-bold text-slate-900">₹{Number(categoryTotals.food || 0).toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
                     </td>
                     <td className="py-3 px-4 text-slate-500">{exp.date}</td>
                     <td className="py-3 px-4 text-indigo-700">{exp.city_name || 'General Trip'}</td>
-                    <td className="py-3 px-4 text-right font-bold text-emerald-700">${exp.amount}</td>
+                    <td className="py-3 px-4 text-right font-bold text-emerald-700">₹{Number(exp.amount).toLocaleString('en-IN')}</td>
                     <td className="py-3 px-4 text-center">
                       <button
                         onClick={() => handleDeleteExpense(exp.id)}
@@ -379,7 +379,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
               required
               value={expDescription}
               onChange={(e) => setExpDescription(e.target.value)}
-              placeholder="e.g. Flight Tickets, Museum Pass, Dinner"
+              placeholder="e.g. Train Tickets, Museum Pass, Dinner"
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
             />
           </div>
@@ -387,7 +387,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Amount ($) *
+                Amount (₹) *
               </label>
               <input
                 type="number"
@@ -396,7 +396,7 @@ export default function TripBudgetScreen({ tripId, onNavigate, onSelectTrip }) {
                 required
                 value={expAmount}
                 onChange={(e) => setExpAmount(e.target.value)}
-                placeholder="150"
+                placeholder="1500"
                 className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white"
               />
             </div>
