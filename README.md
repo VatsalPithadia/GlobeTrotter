@@ -36,8 +36,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser!
 
 | Account | Email | Password | Role | Features |
 |---|---|---|---|---|
-| **Traveler Demo** | `alex@globetrotter.io` | `password123` | `user` | Preloaded trips (Europe, Japan, India), Wishlist & Itinerary builder |
-| **Admin Demo** | `admin@globetrotter.io` | `admin123` | `admin` | Full Platform Analytics, User Directory & Trip Moderation |
+| **Traveler Demo** | `aarav@globetrotter.in` | `password123` | `user` | Preloaded trips (Jaipur, Udaipur, Goa), Wishlist & Itinerary builder |
+| **Admin Demo** | `admin@globetrotter.in` | `admin123` | `admin` | Full Platform Analytics, User Directory & Trip Moderation |
 
 ---
 
