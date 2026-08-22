@@ -83,3 +83,5 @@ users (1) ───────────< trips (N) ────────�
 
 ## 👨‍💻 Author
 - **Vatsal Pithadia** - Built for the **Odoo Hackathon**
+- **Het Soni** - Built for the **Odoo Hackathon**
+- 
